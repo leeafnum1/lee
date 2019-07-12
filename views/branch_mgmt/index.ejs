@@ -1,0 +1,555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform.css" />
+<title>club1004</title>
+
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
+<script src="//code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+<script type="text/javascript">
+var roomList = [];
+$(document).ready(function() {
+	$('.wolfharu_tabmenu_select_transform').TabMenuSelectTransform();
+	historyListAjax(1);
+	paymentListAjax(1);
+	branchRoomList();
+	mainOnAjax();
+	var usetListInterval = setInterval(function(){
+		pointCallAjax(function(){});
+		getUserStatus();
+	}, 3000);
+	pointCallAjax(function(){});
+	$.datepicker.setDefaults({
+	    dateFormat: 'yy-mm-dd',
+	    prevText: '이전 달',
+	    nextText: '다음 달',
+	    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+	    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+	    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+	    showMonthAfterYear: true,
+	    yearSuffix: '년'
+	  });
+
+	  $(function() {
+	    $("#s_s_date, #s_e_date").datepicker();
+	  });
+});
+window.onbeforeunload = function(evt) {    	
+   	if (event.clientY < 0) {    		
+          var state = window.document.readyState;            
+          if(state == 'complete' || state == 'loading'){      
+        	  mainOutAjax();
+          }
+   	}else if(event.clientY == undefined){
+          var state = window.document.readyState;            
+          if(state == 'complete' || state == 'loading'){              
+        	  mainOutAjax();
+          }
+   	}  
+};
+$(window).unload(function() {
+     var state = window.document.readyState;
+     if(state == 'complete' || state == 'loading'){
+    	 mainOutAjax();
+     }
+});
+function mainOnAjax(){
+	$.ajax({
+        url: '/mainon',
+        type: 'GET',
+        success: function(result) {
+        	console.log(result);         
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function mainOutAjax(){
+	$.ajax({
+        url: '/mainout',
+        type: 'GET',
+        success: function(result) {
+        	console.log(result);         
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function  historyListAjax(pageNum){
+	var htmlTag ='';
+	if(pageNum ==null || pageNum ==""){
+		pageNum = 1;
+	}
+	var s_s_date = $("#s_s_date").val();
+	var s_e_date = $("#s_e_date").val();
+	$.ajax({
+        url: '/historyListAjax',
+        type: 'POST',
+        data : {'nowPage' :pageNum ,'s_s_date' :s_s_date , 's_e_date' :s_e_date },
+        dataType: 'json',
+        success: function(result) {
+           var pageObj = result.pageObj;
+           var rows  = result.rows;
+           var spanClass ="";
+	       htmlTag += '    <table class="club_right_table2">';
+	       htmlTag += '    <colgroup>';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '    </colgroup>';
+	       htmlTag += '    <tr>';
+	       htmlTag += '        <th scope="row">날짜</th>';
+	       htmlTag += '        <th scope="row">방</th>';
+	       htmlTag += '        <th scope="row">시작시간</th>';
+	       htmlTag += '        <th scope="row">종료시간</th>';
+	       htmlTag += '        <th scope="row">사용시간</th>';
+	       htmlTag += '        <th scope="row">사용금액</th>';
+	       htmlTag += '    </tr>';
+		   for(var i=0; i<rows.length; i++){
+		  	 var row = rows[i];
+		       htmlTag += '    <tr>';
+		       htmlTag += '        <td>'+row.start_date+'</td>';
+		       htmlTag += '        <td>'+row.m_nickname+'</td>';
+		       htmlTag += '        <td>'+row.start_time+'</td>';
+		       htmlTag += '        <td>'+row.end_time+'</td>';
+		       htmlTag += '        <td>'+row.time_diff+'</td>';
+		       htmlTag += '        <td>'+row.use_money+'</td>';
+		       htmlTag += '    </tr>';
+		   }
+	       htmlTag += ' </table>';
+	       htmlTag += ' <div class="page_wrap">';
+	       if(pageObj.page_sno >0){
+		       htmlTag += '    <a class="first disabled" href="#" onclick ="historyListAjax('+pageObj.prevPage+'); return false;"><img src="/images/btn_page_arrow_left.png" alt="이전"></a>';
+           		for(var i =pageObj.page_sno;i<=pageObj.page_eno;i++){
+	          		 var spanClass ="";
+					if (pageObj.nowPage == i){
+						spanClass ="active";
+					}else{
+						spanClass ="";
+					}
+				       htmlTag += '        <a href="#" class="'+spanClass+'" onclick ="historyListAjax('+i+'); return false;" >'+i+'</a>';
+           		}
+		       htmlTag += '    <a class="last" href="#" onclick ="historyListAjax('+pageObj.nextPage+'); return false;"><img src="/images/btn_page_arrow_right.png" alt="다음"></a>';
+	       }
+
+	       htmlTag += '</div>';
+	       $("#wolfharu_tabmenu_content_item_1").html(htmlTag);
+         },fail: function(error) {
+           //console.log(error);
+        }
+	});
+}
+function  paymentListAjax(pageNum){
+	var htmlTag ='';
+	if(pageNum ==null || pageNum ==""){
+		pageNum = 1;
+	}
+	var s_s_date = $("#s_s_date").val();
+	var s_e_date = $("#s_e_date").val();
+	$.ajax({
+        url: '/paymentListAjax',
+        type: 'POST',
+        data : {'nowPage' :pageNum ,'s_s_date' :s_s_date , 's_e_date' :s_e_date },
+        dataType: 'json',
+        success: function(result) {
+           var pageObj = result.pageObj;
+           var rows  = result.rows;
+           var spanClass ="";
+	       htmlTag += '    <table class="club_right_table2">';
+	       htmlTag += '    <colgroup>';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '    </colgroup>';
+	       htmlTag += '    <tr>';
+	       htmlTag += '        <th scope="row">날짜</th>';
+	       htmlTag += '        <th scope="row">시간</th>';
+	       htmlTag += '        <th scope="row">충전금액</th>';
+	       htmlTag += '        <th scope="row">결제방식</th>';
+	       htmlTag += '        <th scope="row">상태</th>';
+	       htmlTag += '    </tr>';
+		   for(var i=0; i<rows.length; i++){
+		  	 var row = rows[i];
+		       htmlTag += '    <tr>';
+		       htmlTag += '        <td>'+row.reg_date+'</td>';
+		       htmlTag += '        <td>'+row.reg_time+'</td>';
+		       htmlTag += '        <td>'+row.payment+'</td>';
+		       htmlTag += '        <td>'+row.payment_method_kor+'</td>';
+		       if(row.payment_method ==3  ){
+		    	   htmlTag += '        <td>'+row.payment_status_kor+'</td>';
+		       }else if(row.payment_method ==9 && row.payment_status ==1){
+		    	   htmlTag += '        <td>미수</td>';
+		       }else{
+		       
+		    	   htmlTag += '        <td>완료</td>';
+		       }
+		       htmlTag += '    </tr>';
+		   }
+	       htmlTag += ' </table>';
+	       htmlTag += ' <div class="page_wrap">';
+	       if(pageObj.page_sno >0){
+		       htmlTag += '    <a class="first disabled" href="#" onclick ="paymentListAjax('+pageObj.prevPage+'); return false;"><img src="/images/btn_page_arrow_left.png" alt="이전"></a>';
+           		for(var i =pageObj.page_sno;i<=pageObj.page_eno;i++){
+	          		 var spanClass ="";
+					if (pageObj.nowPage == i){
+						spanClass ="active";
+					}else{
+						spanClass ="";
+					}
+				       htmlTag += '        <a href="#" class="'+spanClass+'" onclick ="paymentListAjax('+i+'); return false;" >'+i+'</a>';
+           		}
+		       htmlTag += '    <a class="last" href="#" onclick ="paymentListAjax('+pageObj.nextPage+'); return false;"><img src="/images/btn_page_arrow_right.png" alt="다음"></a>';
+	       }
+
+	       htmlTag += '</div>';
+	       $("#wolfharu_tabmenu_content_item_2").html(htmlTag);
+         },fail: function(error) {
+           //console.log(error);
+        }
+	});
+}
+function branchRoomList(){
+	var htmlTag ='';
+	$.ajax({
+        url: '/branch_mgmt/branchRoomList',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        var rows = result.rows;
+		var htmlTag ='';
+		   for(var i=0; i<rows.length; i++){
+			  
+		  	   var row = rows[i];
+		  	   roomList[i] =row.m_no ;
+		  	   var nowStatus =row.m_status;
+	           htmlTag += ' <tr>';
+	           htmlTag += '   <th scope="row">'+row.m_nickname+' (ID: '+row.m_id+')</th>';
+	           htmlTag += '  <td>';
+	           htmlTag += '  	<ul>';
+	           if(nowStatus == 0){
+		           htmlTag += '      	<li class="club1_1_btn1"><a href="#" onclick ="roomStatusChg(1,'+row.m_no+'); return false;">영상</a></li>';
+		           htmlTag += '      <li class="club1_1_btn2"><a href="#" onclick ="roomStatusChg(2,'+row.m_no+'); return false;">전화</a></li>';
+	           }else if (nowStatus == 1){
+	        	   htmlTag += '      	<li class="club1_1_btn3"><a href ="#" id="'+row.m_no+'_status" name ="statusAtag">영상 대기중</a></li>';
+		           htmlTag += '      <li class="club1_1_btn4"><a href="#" onclick ="roomStatusChg(0,'+row.m_no+'); return false;">퇴실</a></li>';
+	           }else if (nowStatus == 2){
+	        	   htmlTag += '      	<li class="club1_1_btn5"><a href ="#" id="'+row.m_no+'_status" name ="statusBtag">전화 대기중</a></li>';
+		           htmlTag += '      <li class="club1_1_btn4"><a href="#" onclick ="roomStatusChg(0,'+row.m_no+'); return false;">퇴실</a></li>';
+	           }
+
+	           htmlTag += '  </ul>';
+	           htmlTag += '  </td>';
+	           htmlTag += '</tr>';
+		   }
+			$("#branchListTab").html(htmlTag);
+			getUserStatus();
+         },fail: function(error) {
+           //console.log(error);
+        }
+	});
+}
+function roomStatusChg(statusCode,room_m_no){
+	if(confirm("해당 방의 상태를 변경하시겠습니까?")){
+		if(statusCode ==0){
+			rejectRoom(room_m_no);
+		}
+		$.ajax({
+	        url: '/branch_mgmt/roomStatusChg',
+	        type: 'POST',
+	        data : {'statusCode' :statusCode, 'room_m_no': room_m_no},
+	        success: function(result) {
+	        	branchRoomList();
+	        },fail: function(error) {
+	           //console.log(error);
+	        }
+		});
+	}
+
+}
+function pointCallAjax(callback){
+	var point  = 0;
+	var ablePoint = 0;
+	$.ajax({
+        url: '/pointViewAjax',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	point  = result.rows[0].m_point ;
+        	$("#pointSpan").html(point.toLocaleString()+" Point");
+        	callback();
+         },fail: function(error) {
+           //console.log(error);
+        }
+	});
+	$.ajax({
+        url: '/userListAjax',
+        dataType: 'json',
+        type: 'POST',
+        data: {'type':'Y'},
+        success: function(result) {
+                    
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+
+function appendDIV(event) {
+	try{
+		var data=JSON.parse(event.data);
+// 		//console.log(JSON.stringify(data));
+	}catch(e){
+// 		//console.log(e);
+		var data=event;
+		
+	}
+	if(typeof data === 'object'){
+		//console.log(data);
+
+		 if(data.type=='getUserStatus'){
+			 var chatName ="";
+			 var chatYn ="대기중";
+			 $("#"+data.m_no+"_status").css("background","#f39821")
+			 if(data.m_status == 1){
+				 chatName ="영상";
+			}else{
+				chatName ="전화";
+			}
+			 if(data.chatYn=='Y'){
+				 chatYn ="통화 중"
+				 $("#"+data.m_no+"_status").css("background"," #f44336")
+			 }
+			 $("#"+data.m_no+"_status").html(chatName+" "+chatYn);
+			
+		 }
+		if(event.data=='duplLogin'){
+				parent.location.href='/duplLogin';
+		}
+		 
+	}
+}
+function getUserStatus(){
+	$("[name = statusAtag]").each(function(index, item){
+			$(item).html ("영상 대기중");
+			$(item).css("background","#f39821")
+	});
+	$("[name = statusBtag]").each(function(index, item){
+		$(item).html("전화 대기중");
+		$(item).css("background","#f39821");
+	});
+	var data={
+			type:'getUserStatus',
+			data:roomList
+	};
+	con.send(data);
+}
+function rejectRoom(room_m_no){
+	var data={
+			type:'rejectRoom',
+			m_no:room_m_no
+	};
+	con.send(data);
+}
+</script>
+
+
+</head>
+
+<body>
+<div class="main">
+	<h1 span class="sub_logo"><img src="/images/sub_logo.png" /></h1>
+	<div style="
+    float: right;
+    position: relative;
+    margin-top: -63px;
+    margin-right: 130px;
+">
+    <a href="/logout" style="
+    display: inline-block;
+    width: 80px;
+    height: 26px;
+    line-height: 26px;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+    background: #7d7d7d;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 17px;
+    border-radius: 2px;
+    right:;
+">로그아웃</a>
+</div>
+	<div class="club_wrap">
+    	<div class="club_con_left">
+        	<div class="left_top">
+            	<ul>
+               	  <li class="left_top_txt"><%=u_info.m_nickname%> ID:<%=u_info.m_id%></li>
+               	  
+                  <li class="left_top_btn"><a href="#" onclick ="branchRoomList(); return false;"><img src="/images/refresh_btn.jpg" /></a></li>
+                  <li class="left_top_txt" style="margin-top:22px;position:absolute;"><span id ="pointSpan"></span></li>
+                </ul>
+         	</div>
+            <div class="left_middle">
+                <table class="club_left_table" id="branchListTab">
+<!--                     <tr> -->
+<!--                         <th scope="row">2번방 (ID: 10002)</th> -->
+<!--                         <td> -->
+<!--                             <ul> -->
+<!--                             	<li class="club1_1_btn3"><a href="#">영상 대기중</a></li> -->
+<!--                                 <li class="club1_1_btn4"><a href="#">퇴실</ㅊa></li> -->
+<!--                             </ul> -->
+<!--                         </td> -->
+<!--                     </tr> -->
+<!--                     <tr> -->
+<!--                         <th scope="row">3번방 (ID: 10003)</th> -->
+<!--                         <td> -->
+<!--                             <ul> -->
+<!--                             	<li class="club1_1_btn5"><a href="#">전화 대기중</a></li> -->
+<!--                                 <li class="club1_1_btn4"><a href="#">퇴실</a></li> -->
+<!--                             </ul> -->
+<!--                         </td> -->
+<!--                     </tr> -->
+<!--                     <tr> -->
+<!--                         <th scope="row">4번방 (ID: 10004)</th> -->
+<!--                         <td> -->
+<!--                             <ul> -->
+<!--                             	<li class="club1_1_btn6"><a href="#">영상 통화 중</a></li> -->
+<!--                             </ul> -->
+<!--                         </td> -->
+<!--                     </tr> -->
+<!--                     <tr> -->
+<!--                         <th scope="row">5번방 (ID: 10005)</th> -->
+<!--                         <td> -->
+<!--                              <ul> -->
+<!--                             	<li class="club1_1_btn7"><a href="#">전화 통화 중</a></li> -->
+<!--                             </ul> -->
+<!--                         </td> -->
+<!--                     </tr> -->
+                </table>
+            </div>
+        </div>
+        <div class="club_con_right">
+        	<div class="right_top">
+            	<ul>
+               	  <li class="right_top_txt"><%=u_info.m_nickname%> ID:<span style="color:#de4646;"><%=u_info.m_id%></span> <span class="charge_btn"><a href="https://club1004-pay.bstorm.co.kr/branch_payment.html?m_no=<%=u_info.m_no%>" onclick="window.open(this.href,'','width=510, height=320, scrollbars=yes'); return false;">충전</a></span></li>
+                  <li class="right_top_btn">
+                  	<label for="calendar" id=""></label>
+                  	
+					<input type="text" name="j_calendar" id="s_s_date"  readonly="readonly" value="" class="input_text input_text_id_form" title="아이디" style="padding: 0.2em .5em; width:100px;">   <label for="s_s_date" ><img src="/images/calendar.jpg" / style="vertical-align:middle;"></label>&nbsp;~
+					<input type="text" name="j_calendar" id="s_e_date"  readonly="readonly"  value="" class="input_text input_text_id_form" title="아이디" style="padding: 0.2em .5em; width:100px;">   <label for="s_e_date" ><img src="/images/calendar.jpg" / style="vertical-align:middle;"></label>&nbsp;<span class="search_btn"><a href="#" onclick ="historyListAjax(1);paymentListAjax(1); return false;">검색</a></span>
+                  </li>
+                </ul>
+         	</div>
+            <div class="right_middle">
+            	<div class="wolfharu_tabmenu_select_transform">
+                    <div class="wolfharu_tabmenu_menu">
+                        <ul>
+                            <li><a href="#wolfharu_tabmenu_content_item_1" onclick ="historyListAjax(1);"><span>통화내역</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_2" onclick ="paymentListAjax(1);"><span>충전내역</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_3"><span>기타</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="wolfharu_tabmenu_content">
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_1">
+                        </div>
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_2">
+                            
+                        </div>
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_3">
+                            <div class="club1_3_bank">
+                            	<h4>입금 계좌번호 안내</h4>
+                                <ul>
+                                	<li>·은행: 우리은행</li>
+                                    <li>·계좌번호: 1002-959-783694</li>
+                                    <li>·예금주: 권명추</li>
+                                    <li>·전화번호:070-8240-7265</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+</div>
+</body>
+</html>
+ <script type="text/javascript">
+function addZero(x, n) {
+    while (x.toString().length < n) {
+        x = "0" + x;
+    }
+    return x;
+}
+ var thisUrl = new URL(document.URL);
+if(thisUrl.protocol=="https:"){
+	wsUrl="wss://"+thisUrl.host;
+}else{
+	wsUrl="ws://"+thisUrl.host;
+	
+}
+window.WebSocket = window.WebSocket || window.MozWebSocket;
+var connection = null;
+
+var con={};
+var socketConnection =function(){
+	 var userStatus =$("#userStatus").val();
+	 
+	 var sUrl =wsUrl+'/wss2?roomno=<%=session.u_info.m_id%>';
+	 sUrl +='&m_no=<%=session.u_info.m_no%>';
+	 sUrl +='&m_id=<%=session.u_info.m_id%>';
+	 sUrl +='&m_gender=<%=session.u_info.m_gender%>';
+	 sUrl +='&m_status=<%=session.u_info.m_status%>';
+	 sUrl +='&m_nickname=<%=session.u_info.m_nickname%>';
+	 sUrl +='&m_profile_img=<%=session.u_info.m_profile_img%>';
+	 sUrl +='&m_type=<%=session.u_info.m_type%>';
+	 sUrl +='&branch_code=<%=session.u_info.branch_code%>';
+	  connection = new WebSocket(sUrl);
+	  connection.onerror = function (error) {
+	    // an error occurred when sending/receiving data
+		  //console.log(error);
+	  };
+	 
+	con={
+		send:function(data){
+			if(typeof data === 'object'){
+				connection.send(JSON.stringify(data));
+			}else{
+				connection.send(data);
+			}
+		}
+	}
+	socketOpen= function(){
+		////console.log("socket connected");
+		
+// 		var userListInterval = setInterval(function(){
+// 			con.send("userList");
+// 		},3000) ;
+// 		con.send("userList");
+	}
+	connection.onopen=socketOpen;
+	connection.onmessage = appendDIV;
+   connection.onclose = function(event) {
+		////console.log("close" + JSON.stringify(event));
+   };
+   
+
+}
+socketConnection();
+</script>
+
+

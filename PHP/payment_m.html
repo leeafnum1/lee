@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform.css" />
+<title>club1004</title>
+
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.wolfharu_tabmenu_select_transform').TabMenuSelectTransform();
+});
+</script>
+<script>
+function goExchange(){
+	parent.postMessage( "goExchagne", "*" );
+}
+</script>
+<script type="application/x-javascript">
+    
+    addEventListener("load", function()
+    {
+        setTimeout(updateLayout, 0);
+    }, false);
+ 
+    var currentWidth = 0;
+    
+    function updateLayout()
+    {
+        if (window.innerWidth != currentWidth)
+        {
+            currentWidth = window.innerWidth;
+ 
+            var orient = currentWidth == 320 ? "profile" : "landscape";
+            document.body.setAttribute("orient", orient);
+            setTimeout(function()
+            {
+                window.scrollTo(0, 1);
+            }, 100);            
+        }
+    }
+ 
+    setInterval(updateLayout, 400);
+    
+</script>
+<script language=javascript>
+window.name = "BTPG_CLIENT";
+
+var width = 330;
+var height = 480;
+var xpos = (screen.width - width) / 2;
+var ypos = (screen.width - height) / 2;
+var position = "top=" + ypos + ",left=" + xpos;
+var features = position + ", width=320, height=440";
+
+	function on_load() { 
+		myform = document.mobileweb_form; 
+	/**************************************************************************** 
+	OID(상점주문번호)를 랜덤하게 생성시키는 루틴
+	상점에서 각 거래건마다 부여하는 고유의 주문번호가 있다면 이 루틴은 필요없고, 
+	해당 값을 P_OID에 세팅해서 사용하면 된다.
+	****************************************************************************/ 
+		curr_date = new Date(); 
+		year = curr_date.getYear(); 
+		month = curr_date.getMonth(); 
+		day = curr_date.getDay(); 
+		hours = curr_date.getHours(); 
+		mins = curr_date.getMinutes(); 
+		secs = curr_date.getSeconds(); 
+		myform.P_OID.value = year.toString() + month.toString() + day.toString() + hours.toString() + mins.toString() + secs.toString();
+} 
+
+
+	function on_pay() { 
+		myform = document.mobileweb_form; 
+		
+	/**************************************************************************** 
+	결제수단 action url을 아래와 같이 설정한다
+	URL끝에 /를 삭제하면 다음과 같은 오류가 발생한다.
+	"일시적인 오류로 결제시도가 정상적으로 처리되지 않았습니다.(MX1002) 자세한 사항은 이니시스(1588-4954)로 문의해주세요."
+	****************************************************************************/ 
+		if(myform.P_GOPAYMETHOD.value == "CARD") {
+			myform.action = "https://mobile.inicis.com/smart/wcard/"; //신용카드
+			}
+		else if(myform.P_GOPAYMETHOD.value == "VBANK") {
+			myform.action = "https://mobile.inicis.com/smart/vbank/"; //가상계좌
+			}
+		else if(myform.P_GOPAYMETHOD.value == "BANK") {
+			myform.action = "https://mobile.inicis.com/smart/bank/"; //계좌이체
+		}
+		else if(myform.P_GOPAYMETHOD.value == "HPP") {
+			myform.action = "https://mobile.inicis.com/smart/mobile/"; //휴대폰
+			}
+		else if(myform.P_GOPAYMETHOD.value == "CULTURE") {
+			myform.action = "https://mobile.inicis.com/smart/culture/"; //문화 상품권
+			}
+		else if(myform.P_GOPAYMETHOD.value == "HPMN") {
+			myform.action = "https://mobile.inicis.com/smart/hpmn/"; //해피머니 상품권
+			}
+		else {
+			myform.action = "https://mobile.inicis.com/smart/wcard/"; // 엉뚱한 값이 들어오면 카드가 기본이 되게 함
+			}
+		
+		myform.P_RETURN_URL.value = myform.P_RETURN_URL.value + "?P_OID=" + myform.P_OID.value; // 계좌이체 결제시 P_RETURN_URL로 P_OID값 전송(GET방식 호출)
+		myform.target = "_blank"; // 주석 혹은 제거 시 self 로 지정됨
+		myform.submit(); 
+		} 		
+</script>
+<script language="javascript">
+	<!--
+
+		var myPopup = window.open("https://www.inicis.com:443", "", "directories=no,top=5000, left=5000,height=1,width=1,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,location=no");
+		if (!myPopup){
+			alert("팝업이 차단되었습니다.\n팝업설정에서 https://www.club1004.kr 을 추가 해주세요.");
+			myPopup.close(); 
+		}
+		else {
+			myPopup.onload = function() {
+				setTimeout(function() {
+					if (myPopup.screenX === 0) {
+						alert("failed for chrome");
+					} else {
+						// close the test window if popups are allowed.
+						myPopup.close();  
+					}
+				}, 0);
+			};
+			myPopup.close(); 
+		}
+
+		function order(){
+			
+			var form = document.orderFrm;
+
+			//form.price.value = price;
+			//form.goodname.value = name;
+
+			form.target = "pay_tgcorp";
+			form.action = "order_inipay.php";
+			
+			form.submit();
+
+		}
+
+		function goPay(OrderNo, OrderAmt, MemName, Email, OrderGoods, orderPhone, signature, timestamp){
+			
+			myform = document.mobileweb_form; 
+			
+			/*document.ini.signature.value = signature;
+			document.ini.timestamp.value = timestamp;*/
+		//	document.ini.P_OID.value = OrderNo;
+			
+		
+			myform.P_GOODS.value = OrderGoods;
+			
+			myform.P_AMT.value = OrderAmt;
+			myform.P_UNAME.value = MemName;
+			myform.P_MOBILE.value = orderPhone;
+			myform.P_EMAIL.value = Email;
+			
+			//INIStdPay.pay('SendPayForm_id')
+
+
+			on_pay();
+
+		}
+
+		function goParent(){
+			window.top.location.href = "https://www.club1004.kr/main"; 
+		}
+		
+		function goExchange(){
+			parent.postMessage( "goExchagne", "*" );
+		}
+	//-->
+</script>
+
+</head>
+
+<body onload="on_load();">
+<iframe name="pay_tgcorp" width="100%" height="0" frameborder="0" ></iframe>
+	<div class="pop_wp" style="border:none; padding:30px 0;">
+    	<h3 style="margin-bottom:10px;">
+        	<img src="/images/club_pop_icon1.jpg" />
+            포인트 충전
+        </h3>
+		<form name="orderFrm" method="post">
+		<input type="hidden" name="user_idx" value="<?php echo $_GET['m_no']?>">
+		
+    	<table class="information_table club1_pop_tab" style="width:100%;">
+                                    <tr>
+                                        <th scope="row">결제방식</th>
+                                        <td>
+                                            <input type="radio" id="pay_01_1" name ="paymethod" value="card" checked>
+                                            <label for="pay_01_1">카드</label>&nbsp;&nbsp;&nbsp;
+                                            <!-- <input type="radio" id="paymethod" name ="paymethod" value="phone">
+                                            <label for="pay_02_1">휴대폰</label>&nbsp;&nbsp;&nbsp; -->
+                                            <input type="radio" id="pay_03_1" name ="paymethod" value="bank">
+                                            <label for="pay_03_1">무통장입금</label
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">결제금액</th>
+                                        <td> 
+                                            <input type="radio" id="price_01_1" name ="price" value="10000" checked>
+                                            <label for="price_01_1"> 10,000원 = 10,000 포인트</label>
+                                            <p style="height:5px;"></p>
+                                            <input type="radio" id="price_02_1" name ="price" value="50000">
+                                            <label for="price_02_1"> 50,000원 = 50,000 포인트</label>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="point_btn_area" style="margin:30px 0;">
+                                	<span class="point_btn"><a href="javascript:order();">확인</a></span>
+                            	</div>
+    </div>
+	</form>
+
+	<form id="form1" name="mobileweb_form" method="post" action="" accept-charset="euc-kr">
+	<input type="hidden" name="P_NEXT_URL" value="https://club1004-pay.bstorm.co.kr/inipay/m/mx_rnext.php"> 
+	<input type="hidden" name="P_NOTI_URL" value="https://club1004-pay.bstorm.co.kr/inipay/m/mx_rnoti.php"> 
+	<input type="hidden" name="P_RETURN_URL" value="https://club1004-pay.bstorm.co.kr/inipay/m/mx_rreturn.php"> 
+
+	<input type="hidden" name="P_GOPAYMETHOD" value="CARD">
+	<input type="hidden" name="P_MID" value="BRAwhatsup">
+	<input type="hidden" name="P_GOODS" value="">
+	<input type="hidden" name="P_MOBILE" value="">
+	<input type="hidden" name="P_AMT" value="1004">
+	<input type="hidden" name="P_UNAME" value="">
+	<input type="hidden" name="P_EMAIL" value="">
+	<input type="hidden" name="P_NOTI" value="<?php echo $_GET['m_no']?>">
+	<input type="hidden" name="P_RESERVED" value="twotrs_isp=Y&block_isp=Y&twotrs_isp_noti=N">
+	<input type="hidden" name="P_OID" value=""> 
+	<input type="hidden" name="P_HPP_METHOD" value="1"> 
+	</form>
+
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="/css/reset_m.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style_m.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform_m.css" />
+<title>club1004</title>
+
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js" ></script>
+<script src="/js/PeerConnection.js"> </script>
+<script type="text/javascript">
+var r_id= '<%=roomno%>';
+var m_no ='<%=session.u_info.m_no%>';
+var m_id ='<%=session.u_info.m_id%>';
+var m_gender = '<%=session.u_info.m_gender%>';
+var you_m_id ="<%=you_m_id%>";
+var you_m_no ="<%=you_m_no%>";
+var video_price ="<%=session.u_info.video_price%>";
+var voice_price ="<%=session.u_info.voice_price%>";
+var minus_point =video_price ;
+var freeprice_second ="<%=session.u_info.freeprice_second%>";
+var chatType = "<%=chatType%>";
+var callAudio = new Audio('https://club1004.kr/old_telephone.mp3');
+var waitInterval = null;
+callAudio.addEventListener('ended',function(){this.currentTime=0;this.play();},false);
+var myMedia={};
+myMedia.session = {
+    audio: true,
+    video: true,
+    data: true
+};
+var audioInputSelect =null;
+var videoSelect = null;
+var audioOutputSelect =null;
+var videoSession=true;
+var audioSession=true;
+if(chatType =="2"){
+	videoSession =false;
+	minus_point  =voice_price;
+}
+
+var streaming_check=false;
+var mediaModifyCheck = false;
+var unpublished_check=true;
+var videosContainer ;
+$(document).ready(function() {
+	history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+	    history.go(1);
+	};
+// 	$('.left_main_middle').slideUp('show');  
+// 	$('.chat_w').animate({height:322},500);
+
+// 	$('.left_main_middle').slideDown('show'); 
+// 	$('.chat_w').animate({height:200},500);
+	socketConnection();
+	videosContainer = document.getElementById('bigCam') || document.body;
+	startMyStream();
+	document.getElementById('input-text-chat').onkeyup = function(e) {
+		if (e.keyCode != 13) return;
+		text_send();
+	};
+
+
+
+	
+	
+});
+function handleError(error) {
+	//console.log('error: ', error);
+	alert(error);
+}
+var selectors =null; 
+var init=function(){
+	audioInputSelect = document.querySelector('select#audioSource');
+	videoSelect = document.querySelector('select#videoSource');
+	audioOutputSelect = document.querySelector('select#audioOutput');
+	selectors = [audioInputSelect, audioOutputSelect, videoSelect]; 
+	navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+}
+function gotDevices(deviceInfos) {
+	// Handles being called several times to update labels. Preserve values.
+		var values = selectors.map(function(select) {
+		  return select.value;
+		});
+		selectors.forEach(function(select) {
+			while (select.firstChild) {
+				select.removeChild(select.firstChild);
+			}
+		});
+		for (var i = 0; i !== deviceInfos.length; ++i) {
+			var deviceInfo = deviceInfos[i];
+			var option = document.createElement('option');
+			option.value = deviceInfo.deviceId;
+			if (deviceInfo.kind === 'audioinput') {
+				option.text = deviceInfo.label || 'microphone ' + (audioInputSelect.length + 1);
+				audioInputSelect.appendChild(option);
+			} else if (deviceInfo.kind === 'audiooutput') {
+				//console.log("audiooutput");
+				option.text = deviceInfo.label || 'speaker ' +(audioOutputSelect.length + 1);
+				audioOutputSelect.appendChild(option);
+			} else if (deviceInfo.kind === 'videoinput') {
+				option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
+				videoSelect.appendChild(option);
+			} else {
+				//console.log('Some other kind of source/device: ', deviceInfo);
+			}
+		}
+		selectors.forEach(function(select, selectorIndex) {
+			if (Array.prototype.slice.call(select.childNodes).some(function(n) {
+				return n.value === values[selectorIndex];
+			})) {
+				select.value = values[selectorIndex];
+			}
+		});
+}	
+var peer = null;
+function startMyStream(){
+	
+	peer = new PeerConnection(connection,"<%=session.u_info.m_id%>");
+    peer.onStreamAdded = function(e) {
+    	console.log("media");
+    	console.log(e.mediaElement);
+        var video = e.mediaElement;
+        var youVideoId =e.userid;
+        if(video.id =="myVideo"){
+        	$('#smallCam').empty();
+        	if(r_id == m_id){
+        		
+        	}else{
+//        	 		$('.left_main_middle').slideDown('show'); 
+//        	 		$('.chat_w').animate({height:$('.chat_w').height()-120},500);
+       	 		videosContainer = document.getElementById('smallCam') || document.body;
+       			 
+        	}
+        	videosContainer.insertBefore(video, videosContainer.firstChild);
+        	video.onloadedmetadata= function(){
+//         		console.log("myVideo");
+        		var mvWidth =$("#myVideo").width();
+        		var mvHeight = $("#myVideo").height();
+        		if(mvWidth >mvHeight){
+        			 $("#myVideo").css("height",$('.image_cam').height()+"px");
+    				 mvWidth = $("#myVideo").width();
+    				 mvHeight = $("#myVideo").height();
+    				 if(mvWidth<$('.image_cam').width()){
+    					 $("#myVideo").css("height",'');
+    					 $("#myVideo").css("width",window.innerWidth+'px');
+    					 mvWidth = $("#myVideo").width();
+    					 mvHeight = $("#myVideo").height();
+    					 $("#myVideo").css("margin-top","-"+((mvHeight-$('.image_cam').height())/2)+"px");
+    				 }
+    				 else{
+    					 $("#myVideo").css("margin-left","-"+((mvWidth-$('.image_cam').width())/2)+"px");
+    				 }
+        		
+        		}else{
+        			 $("#"+you_id).css("width",window.innerWidth+'px');
+             		
+        			 mvWidth =$("#myVideo").width();
+        			 mvHeight =$("#myVideo").height();
+        			 $("#myVideo").css("margin-top","-"+((mvHeight-$('.image_cam').height())/2)+"px");
+
+        		}
+        	}
+        }else{
+        	$('#bigCam').empty();
+        	$('#bigCam').append(video);
+        	video.onloadedmetadata= function(){
+        		you_id =video.id 
+        		 $('#'+you_id).attr('playsinline',''); 
+        		var mvWidth =$("#"+you_id).width();
+        		var mvHeight = $("#"+you_id).height();
+        		if(mvWidth >mvHeight){
+        			 $("#"+you_id).css("height",$('.image_cam').height()+"px");
+        				 mvWidth =$("#"+you_id).width();
+        				 mvHeight =$("#"+you_id).height();
+        				 if(mvWidth<$('.image_cam').width()){
+        					 $("#"+you_id).css("height",'');
+        					 $("#"+you_id).css("width",window.innerWidth+'px');
+        					 mvWidth =$("#"+you_id).width();
+        					 mvHeight =$("#"+you_id).height();
+        					 $("#"+you_id).css("margin-top","-"+((mvHeight-$('.image_cam').height())/2)+"px");
+        				 }
+        				 else{
+        					 $("#"+you_id).css("margin-left","-"+((mvWidth-$('.image_cam').width())/2)+"px");
+        				 }
+        		}else{
+        			 $("#"+you_id).css("width",window.innerWidth+'px');
+        		
+        			 mvWidth =$("#"+you_id).width();
+        			 mvHeight =$("#"+you_id).height();
+        			 $("#"+you_id).css("margin-top","-"+((mvHeight-$('.image_cam').height())/2)+"px");
+        		}
+        		 video.play();
+        		 video.volume = 1.0;
+        	}
+        	
+        }
+        
+
+        video.play();
+    };
+
+    peer.onStreamEnded = function(e) {
+        var video = e.mediaElement;
+        if (video) {
+            video.style.opacity = 0;
+            setTimeout(function() {
+                video.parentNode.removeChild(video);
+            }, 1000);
+        }
+    };
+
+
+    getUserMedia(function(stream) {
+        peer.addStream(stream);
+        peer.startBroadcasting();
+    });
+}
+var pointInterval = null;
+function appendDIV(event) {
+	try{
+		var data=JSON.parse(event.data);
+		//console.log(JSON.stringify(data));
+	}catch(e){
+		//console.log(e);
+		var data=event;
+		
+	}
+	if(event.data=='pong'){
+		////console.log("receive pong!!");
+		socketAlive=true;return;
+	}
+	if(event.data=='duplLogin'){
+		parent.location.href='/duplLogin';
+	}
+	if(event.data=='pointUpdateOK'){
+		parent.pointCallAjax(function(){});
+		return
+	}
+	if(typeof data === 'object'){
+		if(data.type=='waitPong'){
+			if(data.data=='NOT'){
+				clearInterval(waitInterval);
+				alert('상대방이 종료하였습니다.');
+				peer.close();
+				connection.close();
+				$("#roomno").val( m_id);
+			    document.requestChat.submit();
+			}else if(data.data == you_m_id){
+				console.log('wait');
+			}else if(data.data != r_id ){
+				clearInterval(waitInterval);
+				alert('상대방이 다른사람과 통화를 시작했습니다.');
+				peer.close();
+				connection.close();
+				$("#roomno").val( m_id);
+			    document.requestChat.submit();
+			}else{
+				clearInterval(waitInterval);
+			}
+		}
+		if(data.type=='userList'){
+// 			 console.log(data);
+			parent.userListAjax2(data);
+		 }else if(data.type=='hIdxSend'){
+			 h_idx = data.data;
+// 			 console.log("hidx : " +h_idx);
+				if(data.m_gender =='F'){
+					 setTimeout(function(){
+						 pointUpdate(h_idx,minus_point,m_no ,you_m_no);
+						pointInterval =setInterval(function() {
+							pointUpdate(h_idx,minus_point,m_no ,you_m_no);
+						}, 60000);
+					 }, freeprice_second*1000);
+				}else if(data.m_gender =='M'){
+					setTimeout(function(){
+						pointInterval =setInterval(function() {
+							pointUpdate(h_idx,null,null ,m_no);
+						}, 60000);
+					 }, freeprice_second*1000);
+				}
+		 }else if(data.type=='whoAreYou'){
+			 var tempMyInfo={
+				m_no: '<%=session.u_info.m_no%>', 
+    			m_id:  '<%=session.u_info.m_id%>', 
+    			m_nickname:  '<%=session.u_info.m_nickname%>', 
+    			m_gender:'<%=session.u_info.m_gender%>',
+    			m_session: myMedia.session, 
+    			action: "add"
+	    	};
+			var data={
+				type:'sendMyInfo',
+				data:tempMyInfo
+			};
+			con.send(data,r_id);
+			
+			if(you_m_id !=null && you_m_id !=""){
+				setTimeout(function()  {
+					peer.sendParticipationRequest(you_m_id);	
+		        	setTimeout(function() {
+						if( $('#bigCam').html() =="" ||$("#"+you_m_id)[0].currentTime== 0){
+							peer.sendParticipationRequest(you_m_id);	
+						}
+					}, 4300);
+					if(m_gender  == 'M'){
+						historyInsert('<%=session.u_info.m_no%>' ,you_m_no);
+						 setTimeout(function(){
+							 	pointUpdate(h_idx,minus_point,m_no,you_m_no );
+								pointInterval =setInterval(function() {
+									pointUpdate(h_idx,minus_point,m_no ,you_m_no);
+								}, 60000);
+							 }
+							, freeprice_second*1000);
+					}else{
+						historyInsert(you_m_no , '<%=session.u_info.m_no%>');
+						setTimeout(function(){
+							pointInterval =setInterval(function() {
+								pointUpdate(h_idx,null,null ,m_no);
+							}, 60000);
+						 }, freeprice_second*1000);
+					}
+				
+				}, 2000);
+			}
+			
+// 			console.log("whoareyou")
+		}else if(data.type=='sendMyInfo'){
+			
+// 			console.log("sendMyInfo")
+			//console.log("sendMyInfo:" + JSON.stringify(data.data));
+			if(data.data.action =='add'){
+				$("#youIdx").val(data.data.m_no);
+				$("#youId").val(data.data.m_id);
+// 				$("#input-text-chat").val("");
+// 				$("#input-text-chat").removeAttr("readonly");
+			}else if(data.data.action =='del'){
+				if(r_id != m_id){
+// 					$.ajax({
+// 				        url: '/historyUpdate',
+// 				        data:{
+// 				        	'h_idx':h_idx
+// 						},
+// 				        type: 'POST',
+// 				        success: function(result) {
+				        	clearInterval(pointInterval);
+							peer.close();
+							connection.close();
+							$("#roomno").val( m_id);
+							$(parent.document).find("#myModal3").show();
+						    document.requestChat.submit();
+// 				        }
+// 					});
+				}
+			}
+		}else if(data.type =="sendMessage"){
+			var div_class1="l_you_mms";
+			var div_class2="you_mms";
+			var div_class3="you_mms_time";
+			var styleC ='style="margin-left: 10px;"';
+			if(data.m_no == '<%=session.u_info.m_no%>'){
+				div_class1 ="l_my_mms";
+				div_class2 ="my_mms";
+				div_class3 ="my_mms_time";
+				styleC ='style="margin-right: 10px;"';
+			}
+			var d = new Date();
+			var hour =d.getHours();
+			var minutes = d.getMinutes() ;
+			var ampm ="AM";
+			if(hour>12){
+				hour = hour-12;
+				ampm ="PM";
+			}
+			
+			if(hour<10){
+				hour = "0" + hour;
+			}
+			if(minutes<10){
+				minutes = "0" + minutes;
+			}
+			var addHtml ='<div class="'+div_class1+'" '+styleC+'>';
+			addHtml +='<div class="'+div_class2+'">'+data.text+'</div>';
+			addHtml +=' <div class="'+div_class3+'">'+ampm+' '+hour+':'+minutes+'</div></div>';
+			$("#chat_area").append(addHtml);
+		 	$("#chat_window").scrollTop($("#chat_window")[0].scrollHeight);
+		}else if(data.type =="chatRequest"){
+			var requestNickName = data.requestNickName;
+			var request_m_id = data.request_m_id;
+			var reqRoomno = data.roomno;
+			var chat_Type = data.chatType;
+			  callAudio.currentTime=0;
+			  callAudio.play();
+			  setTimeout(function() {
+				  chatResponse(reqRoomno,requestNickName,request_m_id,chat_Type,data.req_m_no);
+			}, 500);
+		}else if(data.type =="requestRefusal"){
+			alert("상대방이 거절하였습니다.");
+			peer.close();
+			connection.close();
+			$("#roomno").val( m_id);
+		    document.requestChat.submit();
+		}else if(data.type =="ClosePOP"){
+			 $(parent.document).find("#myModal1").hide();
+			 callAudio.pause();
+		}
+		 
+	}
+}
+text_send = function (){
+		chat_area=document.getElementById('input-text-chat');
+	    // removing trailing/leading whitespace
+	    chat_area.value = chat_area.value.replace(/^\s+|\s+$/g, '');
+	    if (!chat_area.value.length) return;
+		var text_value=chat_area.value;
+	
+	    text_value=chat_area.value;
+	    m_no = '<%=session.u_info.m_no%>';
+	    var data ={
+	    	type:"sendMessage",
+	    	text:text_value,
+	    	m_no:m_no
+	    }
+	    con.send(data);
+	    appendDIV(data);
+	    chat_area.value = '';
+}
+function  chatRequest(target_m_no,target_m_id,target_m_nickname,chat_Type){
+	   if(confirm(target_m_nickname+"님에게 통화요청 하시겠습니까?")){
+		   var data ={
+		       	type:"chatRequest",
+		       	requestNickName :  '<%=session.u_info.m_nickname%>',
+		       	request_m_id :  '<%=session.u_info.m_id%>',
+		       	target_m_no  : target_m_no,
+		       	roomno : m_id+""+target_m_id,
+		       	req_m_no : m_no,
+		       	chatType: chat_Type
+		    };
+		    con.send(data);
+		    $("#roomno").val( m_id+""+target_m_id);
+		    $("#you_m_id").val( target_m_id);
+		    $("#you_m_no").val( target_m_no);
+		    $("#chatType").val( chat_Type);
+		    document.requestChat.submit();
+	   }
+	}
+function  chatResponse(roomno,requestNickName,request_m_id,chat_Type,req_m_no){
+
+  var chatTypeKr ="영상";
+  if(chat_Type ==2){
+	  chatTypeKr ='전화';
+  }
+  var msg =requestNickName+"님의 "+chatTypeKr+"통화요청을 <br /> 수락하시겠습니까?";
+//   if(confirm(requestNickName+"님의 "+chatTypeKr+"통화요청을 수락하시겠습니까?")){
+	  $("#roomno").val(roomno);
+	  $("#you_m_id").val(request_m_id);
+	  $("#you_m_no").val(req_m_no);
+	  $("#chatType").val( chat_Type);
+	  $(parent.document).find("#callMsg").html(msg);
+	  $(parent.document).find("#myModal1").show();
+// 	  document.requestChat.submit();
+
+//   }else{
+// 	   var data ={
+// 		       	type:"requestRefusal",
+// 		       	roomno : roomno
+// 		    };
+// 		    con.send(data);
+//   }
+}
+function exitChat(){
+  if(confirm("통화를 종료하시겠습니까?")){
+		peer.close();
+		connection.close();
+		$("#roomno").val( m_id);
+	    document.requestChat.submit();
+  }
+}
+var h_idx ;
+function historyInsert(m_no1, m_no2){
+	console.log("historyInsert");
+	$.ajax({
+        url: '/historyInsert',
+        data:{
+        	'm_no1':m_no1,
+        	'm_no2':m_no2,
+        	'chatType': chatType
+		},
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	h_idx =  result.rows[0].h_idx ;
+   			var data={
+  					type:'hIdxSend',
+  					data: h_idx,
+  					m_gender:m_gender,
+  					r_id : r_id
+  				};
+			con.send(data,r_id);
+        }
+	});
+}
+function pointUpdate(h_idx,point,minus_m_no,plus_m_no){
+// 	console.log('plus_m_no');
+	var ct = chatType;
+	var nowP=$(parent.document).find("#pointValue").val();
+// 	console.log(nowP);
+	if(m_gender =='M' &&Number(nowP)  < point){
+		clearInterval(pointInterval);
+		peer.close();
+		connection.close();
+		$("#roomno").val( m_id);
+		alert("포인트가 부족하여 통화가 종료됩니다.");
+	    document.requestChat.submit();
+	}else{
+
+   			var data={
+ 					type:'pointUpdate'+m_gender,
+ 					h_idx: h_idx,
+ 					minus_m_no : minus_m_no,
+ 					plus_m_no : plus_m_no,
+ 					chatType : ct
+ 				};
+   			con.send(data,r_id);
+//   	 		$.ajax({
+// 	        url: '/pointUpdate'+m_gender,
+// 	        data:{
+// 	        	'h_idx':h_idx,
+// 	        	'point':point,
+// 	        	'minus_m_no':minus_m_no,
+// 	        	'plus_m_no':plus_m_no,
+// 	        	'chatType' : ct
+// 			},
+// 	        type: 'POST',
+// 	        success: function(result) {
+// 	        	console.log("historyInsertOK");
+// 	        	parent.pointCallAjax(function(){});
+// 	        }
+// 		});
+	}
+
+}
+
+</script>
+
+
+</head>
+
+<body>
+<form name="requestChat" method ="post" action ="/chatroom">
+	<input name = "roomno" id ="roomno" type ="hidden" />
+	<input name = "you_m_id" id ="you_m_id" type ="hidden" />
+	<input name = "you_m_no" id ="you_m_no" type ="hidden" />
+	<input name = "chatType" id ="chatType" type ="hidden" value=1 />
+</form>
+<select id="videoSource" style="display:none" ></select>
+<select id="audioSource" style="display:none"></select>
+<select id="audioOutput" style="display:none"></select>
+<div class="main"  style="padding:0px">
+        	<div id="left_main">
+            	<div class="image_cam" style="width:100%; height:240px; background: #5a5a5a; overflow: hidden;" id ="bigCam" ></div>
+                <div class="left_main_middle" style="">
+                	<ul>
+<!--                     	<li class="my_cam" id="smallCam" style="width:100px; height:100px;background: #5a5a5a" ></li> -->
+                        <li class="hang_up_btn">
+                            <a href="#" onclick ="exitChat(); return false;" style="left:0px ; bottom:14px">전화끊기</a>
+                        </li>
+                        <li style="margin-left: 84px;width: 73%;">
+                       		 <input id="input-text-chat" type="text"/ style="background:#ffffff; width:100%" autocomplete="off"  />
+                            <span class="chat_bt"><a href="#" onclick ="text_send(); return false;" class="chat_btC" style="right:8px">Send</a></span> 
+                        </li>
+                    </ul>
+                </div>
+                <div class="image_cam" style="width:100%; height:240px;background: #5a5a5a" id ="smallCam"> </div>
+                <div class="chat_window" id ="chat_window" style="width: 100%;height: 240px;position: absolute;top: 420px;overflow-y: auto;" >
+                <div class ="chat_w" id ="chat_area"></div>
+                </div>
+            </div>
+</div>   
+ <script type="text/javascript">
+function addZero(x, n) {
+    while (x.toString().length < n) {
+        x = "0" + x;
+    }
+    return x;
+}
+ init();
+ var thisUrl = new URL(document.URL);
+if(thisUrl.protocol=="https:"){
+	wsUrl="wss://"+thisUrl.host;
+}else{
+	wsUrl="ws://"+thisUrl.host;
+	
+}
+window.WebSocket = window.WebSocket || window.MozWebSocket;
+var connection = null;
+
+var con={};
+var socketConnection =function(){
+	 var userStatus =$("#userStatus").val();
+	 var sUrl =wsUrl+'/wss2?roomno='+r_id;
+	 sUrl +='&m_no=<%=session.u_info.m_no%>';
+	 sUrl +='&m_id=<%=session.u_info.m_id%>';
+	 sUrl +='&m_gender=<%=session.u_info.m_gender%>';
+	 sUrl +='&m_status=<%=session.u_info.m_status%>';
+	 sUrl +='&m_nickname=<%=session.u_info.m_nickname%>';
+	 sUrl +='&m_profile_img=<%=session.u_info.m_profile_img%>';
+	 sUrl +='&m_type=<%=session.u_info.m_type%>';
+	 sUrl +='&branch_code=<%=session.u_info.branch_code%>';
+	 sUrl +='&you_m_no='+you_m_no;
+	  connection = new WebSocket(sUrl);
+	  connection.onerror = function (error) {
+	    // an error occurred when sending/receiving data
+// 		  console.log(error);
+	  };
+	 
+	con={
+		send:function(data){
+			if(typeof data === 'object'){
+				connection.send(JSON.stringify(data));
+			}else{
+				connection.send(data);
+			}
+		}
+	}
+	socketOpen= function(){
+		//console.log("socket connected");
+		var tempMyInfo={
+				u_idx: '<%=session.u_info.u_idx%>', 
+   			u_id:  '<%=session.u_info.u_id%>', 
+   			u_nickname:  '<%=session.u_info.u_nickname%>', 
+   			u_sex:'<%=session.u_info.u_sex%>',
+   			u_country:'<%=session.u_info.u_country%>',
+   			u_localarea: '<%=session.u_info.u_localarea%>',
+   			u_session: myMedia.session, 
+   			action: "add"
+   	};
+		var data={
+				type:'sendMyInfo',
+				data:tempMyInfo
+		};
+		con.send(data,r_id);
+		var data={
+				type:'whoAreYou'
+		};
+		con.send(data,r_id);
+// 		var userListInterval = setInterval(function(){
+// 			con.send("userList");
+// 		},3000) ;
+// 		con.send("userList");
+		setInterval(function ping() {
+			 con.send('ping');
+		},5000);
+		if(r_id != m_id){
+			waitInterval = setInterval(function(){
+				var data ={
+					type :'waitPing',
+					you_m_no :you_m_no
+				};
+				con.send(data);
+			},3000);
+		}
+	}
+	connection.onopen=socketOpen;
+	connection.onmessage = appendDIV;
+   connection.onclose = function(event) {
+		//console.log("close" + JSON.stringify(event));
+   };
+   
+
+}
+
+// you need to capture getUserMedia yourself!
+function getUserMedia(callback) {
+    var hints = {
+        audio: true,
+        video: {
+            optional: [],
+            mandatory: {}
+        }
+    };
+//     if(audioInputSelect.value == null || audioInputSelect.value ==""){
+//     	audioSession =false;
+//     }
+//     if(videoSelect.value == null || videoSelect.value ==""){
+//     	videoSession =false;
+//     }
+	var constraints = { audio:audioSession, video: videoSession}
+	navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+		
+		 var video = document.createElement('video');
+		 try{
+			 video.src = URL.createObjectURL(stream);
+		 }catch(e){
+			 video.srcObject = stream;
+		 }
+         
+         video.controls = false;
+         video.muted = true;
+         video.id="myVideo";
+         peer.onStreamAdded({
+             mediaElement: video,
+             userid: '<%=session.u_info.m_no%>',
+             stream: stream
+         });
+
+         callback(stream);
+	}).catch(function(err) {
+		console.log(err);
+	});
+
+}
+</script>
+<script>
+
+function funLoad(){
+	 $('.image_cam').height(window.innerHeight-300-115);
+	 $('.chat_window').height(window.innerHeight-300-115);
+	 var scO = $("#smallCam").offset();
+	 $('.chat_window').css('top',scO.top +5);
+	var Cheight = $('.image_cam').height();
+	
+}
+window.onload = funLoad;
+window.onresize = funLoad;
+</script>
+</body>
+</html>
+
+
+

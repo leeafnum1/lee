@@ -1,0 +1,119 @@
+<%include top%>
+<script type='text/javascript'>
+function searchGo (nowPage){
+	if(nowPage ==null){
+		nowPage = 1;
+	}
+	var search_type =$("#search_type").val();
+	var search_text =$("#search_text").val();
+	
+	location.href ="/mgmt/member?nowPage="+nowPage+"&search_type="+search_type+"&search_text="+search_text;
+}
+</script>
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/mgmt/icon_title.gif" width="12" height="12">회원관리</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>회원관리</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/mgmt/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3">
+          <tr>
+            <th width="8%" align="center" bgcolor="#F5F5F5">NO</th>
+            <th width="35%" align="center" bgcolor="#F5F5F5">아이디</th>
+            <th align="center" bgcolor="#F5F5F5">닉네임</th>
+            <th width="10%" align="center" bgcolor="#F5F5F5">성별</th>
+            <th width="10%" align="center" bgcolor="#F5F5F5">관리</th>
+          </tr>
+          
+            <%
+		     for(var i=0; i<rows.length; i++){
+		    	 var row = rows[i];
+			 %>
+          <tr>
+            <td align="center" bgcolor="#FFFFFF"><%=row.m_no%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.m_id%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.branch_name%> <%=row.m_nickname%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.m_gender_kor%></td>
+            <td align="center" bgcolor="#FFFFFF"><a href="member_detail?m_no=<%=row.m_no%>"><div class="ad_btn1">관리</div></a></td>
+          </tr>
+          <%}%>
+          </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td><table width="100%" height="60" border="0" cellpadding="0" cellspacing="0">
+              <tbody>
+                <tr>
+                                                      <td width="60%" align="right" class="num">
+                  <%if(pageObj.page_sno >0){%>
+                 <a href="#" onclick ="searchGo(1); return false;"><img src="/images/mgmt/btn_pre2.gif" width="19" height="9" border="0" align="absmiddle" /></a> 
+                  <a href="#" onclick ="searchGo(<%=pageObj.prevPage%>); return false;"><img src="/images/mgmt/btn_pre.gif" width="19" height="9" border="0" align="absmiddle" /></a> 
+            		<%
+                      	
+                       	for(var i =pageObj.page_sno;i<=pageObj.page_eno;i++){
+                      		 var spanClass ="";
+						
+					%>
+                   	<font color="BABABA"> | </font><a href="#" onclick ="searchGo(<%=i%>); return false;"><%	if (pageObj.nowPage == i){%><strong><%}%><%=i%><%	if (pageObj.nowPage == i){%></strong><%}%></a>
+                   	<%}%>
+                  <a href="#" onclick ="searchGo(<%=pageObj.nextPage%>); return false;"><img src="/images/mgmt/btn_next.gif" width="19" height="9" border="0" align="absmiddle" /></a> 
+                  <a href="#" onclick ="searchGo(<%=pageObj.page_eno%>); return false;"><img src="/images/mgmt/btn_next2.gif" width="19" height="9" border="0" align="absmiddle" /></a>
+                  <%}%>
+                 
+                  </td>
+                  <td align="right" class="num">
+
+                                  <select id="search_type">
+                                        <option value="s_id"  <%if(pageObj.search_type=='s_id'){%> selected <%}%>>아이디</option>
+                                        <option value="s_nickname" <%if(pageObj.search_type=='s_nickname'){%> selected <%}%>>닉네임</option>
+                                    </select>
+                              <input name="name2" id="search_text" type="text" class="textarea_input" maxlength="50" / style="padding:.3em .5em;" value ="<%=pageObj.search_text%>"> <a href="#" onclick ="searchGo(); return false;"><div class="order_bt3">검색</div></a>
+                  </td>
+                          </tr>
+                </tbody>
+            </table></td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+ 
+
+<%include bottom%>

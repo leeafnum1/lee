@@ -1,0 +1,143 @@
+<%include top%>
+<script type='text/javascript'>
+$(document).ready(function() {
+	$.datepicker.setDefaults({
+	    dateFormat: 'yy-mm-dd',
+	    prevText: '이전 달',
+	    nextText: '다음 달',
+	    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+	    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+	    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+	    showMonthAfterYear: true,
+	    yearSuffix: '년'
+	  });
+
+	  $(function() {
+	    $("#s_s_date, #s_e_date").datepicker();
+	  });
+});
+
+function searchGo (nowPage){
+	if(nowPage ==null){
+		nowPage = 1;
+	}
+	var s_s_date =$("#s_s_date").val();
+	var s_e_date =$("#s_e_date").val();
+	
+	location.href ="/mgmt/history?nowPage="+nowPage+"&s_s_date="+s_s_date+"&s_e_date="+s_e_date;
+}
+</script>
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/mgmt/icon_title.gif" width="12" height="12">통화내역</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>통화내역</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/mgmt/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3">
+          <tr>
+            <th width="8%" align="center" bgcolor="#F5F5F5">NO</th>
+            <th align="center" bgcolor="#F5F5F5">일자</th>
+            <th align="center" bgcolor="#F5F5F5">아이디</th>
+            <th align="center" bgcolor="#F5F5F5">상대아이디</th>
+            <th align="center" bgcolor="#F5F5F5">시작시간</th>
+            <th align="center" bgcolor="#F5F5F5">종료시간</th>
+            <th align="center" bgcolor="#F5F5F5">사용시간</th>
+            <th align="center" bgcolor="#F5F5F5">종류</th>
+            <th align="center" bgcolor="#F5F5F5">사용금액</th>
+          </tr>
+          <%
+		     for(var i=0; i<rows.length; i++){
+		    	 var row = rows[i];
+		   %>
+          <tr>
+            <td align="center" bgcolor="#FFFFFF"><%=row.h_idx%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.start_date%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.m_id1%></td> 
+            <td align="center" bgcolor="#FFFFFF"><%=row.m_id2%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.start_time%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.end_time%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.time_diff%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.chat_type_kor%></td>
+            <td align="center" bgcolor="#FFFFFF"><%=row.use_money.toLocaleString()%></td>
+          </tr>
+         <%}%>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center">
+            	<div class="ad_btn_area">
+            	  <table width="100%" height="60" border="0" cellpadding="0" cellspacing="0">
+            	    <tbody>
+            	                      <tr>
+                                    <td width="60%" align="right" class="num">
+                  <%if(pageObj.page_sno >0){%>
+                 <a href="#" onclick ="searchGo(1); return false;"><img src="/images/mgmt/btn_pre2.gif" width="19" height="9" border="0" align="absmiddle" /></a> 
+                  <a href="#" onclick ="searchGo(<%=pageObj.prevPage%>); return false;"><img src="/images/mgmt/btn_pre.gif" width="19" height="9" border="0" align="absmiddle" /></a> 
+            		<%
+                      	
+                       	for(var i =pageObj.page_sno;i<=pageObj.page_eno;i++){
+                      		 var spanClass ="";
+						
+					%>
+                   	<font color="BABABA"> | </font><a href="#" onclick ="searchGo(<%=i%>); return false;"><%	if (pageObj.nowPage == i){%><strong><%}%><%=i%><%	if (pageObj.nowPage == i){%></strong><%}%></a>
+                   	<%}%>
+                  <a href="#" onclick ="searchGo(<%=pageObj.nextPage%>); return false;"><img src="/images/mgmt/btn_next.gif" width="19" height="9" border="0" align="absmiddle" /></a> 
+                  <a href="#" onclick ="searchGo(<%=pageObj.page_eno%>); return false;"><img src="/images/mgmt/btn_next2.gif" width="19" height="9" border="0" align="absmiddle" /></a>
+                  <%}%>
+                 
+                  </td>
+                  <td align="right" class="num"><label for="calendar" id=""></label>
+					<input type="text" name="j_calendar" id="s_s_date"  readonly="readonly" value="<%=pageObj.s_s_date%>" class="input_text input_text_id_form" title="아이디" style="padding: 0.2em .5em; width:100px;">   <label for="s_s_date" ><img src="/images/calendar.jpg" / style="vertical-align:middle;"></label>&nbsp;~
+					<input type="text" name="j_calendar" id="s_e_date"  readonly="readonly"  value="<%=pageObj.s_e_date%>" class="input_text input_text_id_form" title="아이디" style="padding: 0.2em .5em; width:100px;">   <label for="s_e_date" ><img src="/images/calendar.jpg" / style="vertical-align:middle;"></label>&nbsp;<span class="order_bt3"><a href="#" onclick ="searchGo(); return false;">검색</a></span></td>
+                </tr>
+          	      </tbody>
+          	    </table>
+            	</div>
+            </td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+ 
+
+<%include bottom%>

@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="/css/reset_m.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style_m.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform_m.css" />
+<title>club1004</title>
+<style>
+      /* The Modal (background) */
+      .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+  
+      /* Modal Content/Box */
+      .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto; /* 15% from the top and centered */
+          padding: 20px;
+          border: 1px solid #888;
+          width: 30%; /* Could be more or less, depending on screen size */                          
+      }
+</style>
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript">
+var nowType =1;
+$(document).ready(function() {
+	$('.wolfharu_tabmenu_select_transform').TabMenuSelectTransform();
+// 	userListAjax(nowType);
+	document.mainForm.target ="chatFrame";
+	document.mainForm.submit();
+	mainOnAjax();
+	var usetListInterval = setInterval(function(){
+// 		userListAjax(nowType);
+		pointCallAjax(function(){});
+	}, 3000);
+	pointCallAjax(function(){});
+});
+window.onbeforeunload = function(evt) {    	
+   	if (event.clientY < 0) {    		
+          var state = window.document.readyState;            
+          if(state == 'complete' || state == 'loading'){      
+        	  mainOutAjax();
+          }
+   	}else if(event.clientY == undefined){
+          var state = window.document.readyState;            
+          if(state == 'complete' || state == 'loading'){              
+        	  mainOutAjax();
+          }
+   	}  
+};
+$(window).unload(function() {
+    var state = window.document.readyState;
+    if(state == 'complete' || state == 'loading'){
+   	 mainOutAjax();
+    }
+});
+function mainOnAjax(){
+	$.ajax({
+       url: '/mainon',
+       type: 'GET',
+       success: function(result) {
+       	console.log(result);         
+       },fail: function(error) {
+          console.log(error);
+       }
+	});
+}
+function mainOutAjax(){
+	$.ajax({
+       url: '/mainout',
+       type: 'GET',
+       success: function(result) {
+       	console.log(result);         
+       },fail: function(error) {
+          console.log(error);
+       }
+	});
+}
+function userListAjax(nowtype){
+// 	var typeKr ="영상";
+// 	if(nowType == 2){
+// 		typeKr ="전화";
+// 	}
+// 	$.ajax({
+//         url: '/userListAjax',
+//         dataType: 'json',
+//         type: 'POST',
+//         data: {'listType':nowtype},
+//         success: function(result) {
+//         	var htmlTag ='';
+//         	for(var i=0 ; i<result.rows.length; i++){
+//         		var genderIcon ='m_icon';
+//         		var row = result.rows[i];
+//         		if (row.m_gender != 'M'){
+//         			genderIcon = 'w_icon';
+//         		}
+//             	htmlTag += '<ul class="club8_list">';
+//             	htmlTag +=' <li class="right_top_txt call_waiting">'; 
+//             	if(row.m_profile_img){
+//             		htmlTag +='   <div class="id_pro_img_m" style="background: url(/uploads/'+row.m_profile_img+') no-repeat center center ;"></div>';
+//             	}else{
+//             		htmlTag +='   <div class="id_pro_img_m"></div>';
+//             	}
+//             	htmlTag +='   <strong class="'+genderIcon+'">'+row.m_nickname+'</strong>';
+//             	htmlTag +=' </li>';
+//             	htmlTag +='<li class="right_top_btn video_call_btn" style="float:right;">';
+//             	htmlTag +='  <a href="#" onclick ="chatRequest(\''+row.m_no+'\',\''+row.m_id+'\',\''+row.m_nickname+'\' ,'+nowtype+'); return false; ">'+typeKr+'통화</a>';
+//             	htmlTag +=' </li>';
+//             	htmlTag +=' </ul>';
+//         	}
+//         	$("#wolfharu_tabmenu_content_item_"+nowType).html(htmlTag);
+                    
+//         },fail: function(error) {
+//            console.log(error);
+//         }
+// 	});
+}
+function chatRequest(target_m_no,target_m_id,target_m_nickname,chatType){
+	$('#chatFrame')[0].contentWindow.chatRequest(target_m_no,target_m_id,target_m_nickname,chatType);
+}
+
+function goMypage(){
+	
+// 	if(confirm("페이지 이동시 연결되있던 통화가 종료됩니다. 이동하시겠습니까?")){
+// 		location.href ="/mypage";
+// 	}
+	$("#mainDiv").hide();
+	$("#mypageDiv").show();
+}
+function goChatFrame(){
+	
+// 	if(confirm("페이지 이동시 연결되있던 통화가 종료됩니다. 이동하시겠습니까?")){
+// 		location.href ="/mypage";
+// 	}
+	$("#mainDiv").show();
+	$("#mypageDiv").hide();
+}
+function pointCallAjax(callback){
+	var point  = 0;
+	var ablePoint = 0;
+	$.ajax({
+        url: '/pointViewAjax',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	point  = result.rows[0].m_point ;
+        	$("#pointSpan").html(point.toLocaleString()+" Point");
+        	$("#pointValue").val(point);
+        	callback();
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+function goMypage(){
+	
+// 	if(confirm("페이지 이동시 연결되있던 통화가 종료됩니다. 이동하시겠습니까?")){
+// 		location.href ="/mypage";
+// 	}
+	$("#mainDiv").hide();
+	$("#mypageDiv").show();
+}
+function goChatFrame(){
+	
+// 	if(confirm("페이지 이동시 연결되있던 통화가 종료됩니다. 이동하시겠습니까?")){
+// 		location.href ="/mypage";
+// 	}
+	$("#mainDiv").show();
+	$("#mypageDiv").hide();
+}
+function profileChg(){
+	$.ajax({
+        url: '/profileChg',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	if(result.m_profile_img){
+        		$("#pro_img").css("background","url(/uploads/"+result.m_profile_img+") no-repeat center center");
+        		$("#pro_img").css("background-size","51px");
+        	}else{
+        		$("#pro_img").css("background","url(/images/icon_w.png) no-repeat center center #e0e0e0");
+        		$("#pro_img").css("background-size","51px");
+        	}
+        	$("#nicknameSt").html(result.m_nickname);
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+function userListAjax2(data){
+// 	console.log(data);
+	
+	$.ajax({
+        url: '/userListAjax',
+        dataType: 'json',
+        type: 'POST',
+        data: {'type':'Y'},
+        success: function(result) {
+                    
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+	var typeKr ="영상";
+	if(nowType == 2){
+		typeKr ="전화";
+	}
+	var htmlTag ='';
+	for(var i=0 ; i<data.m_id.length; i++){
+		var t_roomno = data.roomno[i];
+		var t_no = data.m_no[i];
+		var t_status = data.m_status[i];
+		var t_gender =$.trim(data.m_gender[i]);
+		var t_id = data.m_id[i];
+		var t_nickname = data.m_nickname[i];
+		var t_profile_img = data.m_profile_img[i];
+
+// 		console.log(t_status +"||"+nowType)
+		if(<%=session.u_info.m_no%> != t_no &&(t_status ==0 || t_status == nowType) && '<%=session.u_info.m_gender%>' != t_gender){
+			var genderIcon ='m_icon';
+			
+// 			console.log(t_gender);
+			if (t_gender != 'M'){
+				genderIcon = 'w_icon';
+			}
+	    	htmlTag += '<ul class="club8_list">';
+	    	htmlTag +=' <li class="right_top_txt call_waiting">'; 
+	     	if(t_profile_img){
+	     		htmlTag +='   <div class="id_pro_img_m" style="background: url(/uploads/'+t_profile_img+') no-repeat center center ;background-size:51px;"></div>';
+	     	}else{
+	    		htmlTag +='   <div class="id_pro_img_m"></div>';
+	     	}
+	    	
+	    	htmlTag +='   <strong class="'+genderIcon+'">'+t_nickname+'</strong>';
+	    	htmlTag +=' </li>';
+	    	htmlTag +='<li class="right_top_btn video_call_btn" style="float:right;">';
+	    	if(t_roomno != t_id){
+	    		htmlTag +='  <a href="#" onclick ="alert(\'상대방이 통화중입니다\'); return false; " style ="color:#fff;  background:#f44336">'+typeKr+'통화 중</a>';
+	    	}else{
+	    		htmlTag +='  <a href="#" onclick ="chatRequest(\''+t_no+'\',\''+t_id+'\',\''+t_nickname+'\' ,'+nowType+'); return false; ">'+typeKr+'통화</a>';
+	    	}
+	    	htmlTag +=' </li>';
+	    	htmlTag +=' </ul>';
+			
+		}
+	}
+	$("#wolfharu_tabmenu_content_item_"+nowType).html(htmlTag);
+}
+function close_pop(flag) {
+    $('#myModal'+flag).hide();
+};
+
+function refuseChat(){
+	var data ={
+	       	type:"requestRefusal",
+	       	roomno : $('#chatFrame').contents().find('#roomno').val()
+	    };
+		$('#chatFrame')[0].contentWindow.con.send(data);
+	   
+}
+</script>
+
+
+</head>
+
+<body >
+<form name="mainForm" method ="post" action="/chatroom">
+	<input type="hidden" name="roomno" id ="roomno" value ="<%=session.u_info.m_id%>" />
+	<input type="hidden" name="chatType" id ="chatType" value ="1" />
+</form>
+<input type="hidden" name="pointValue" id ="pointValue" value =""  />
+<div class="main">
+	<h1 span class="sub_logo"><img src="/images/sub_logo.png" /></h1>
+		<div style="
+    float: right;
+    position: relative;
+    margin-top: -63px;
+    margin-right: 40px;
+">
+    <a href="/logout" style="
+    display: inline-block;
+    width: 80px;
+    height: 26px;
+    line-height: 26px;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+    background: #7d7d7d;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 17px;
+    border-radius: 2px;
+    right:;
+">로그아웃</a>
+</div>
+	<div id ="mainDiv">
+	<div class="club_wrap club8_wp" style="padding-bottom:0;">
+    
+    	<div class="club_con_left club8_left" style="float:right; margin-right:0;">
+        	<iframe src =''   style="border:0px;width:100%;height:724px" name ="chatFrame" id="chatFrame"></iframe>
+        </div>
+        
+    	<div class="club_con_right club8_right" style="margin-top:0px">
+        	<div class="right_top">
+            	<ul>
+               	  <li class="right_top_txt">
+               	  	<% if(session.u_info.m_profile_img){%>
+               	  	<div class="id_pro_img_w" style="background: url(/uploads/<%=session.u_info.m_profile_img%>) no-repeat center center ;background-size: 51px;" id="pro_img"></div>
+               	  	<%}else{%>
+               	  	<div class="id_pro_img_w" ></div>
+               	  	<%}%>
+                  	
+                  	<strong id="nicknameSt"><%=session.u_info.m_nickname%></strong>
+                    <span id ="pointSpan"></span>
+                  </li>
+                  <li class="right_top_btn club8_btn">
+                  	<% if(session.u_info.m_gender == 'M') { %> 
+                  	<a style="margin-left:0px ; width:65px" href="https://club1004-pay.bstorm.co.kr/payment_m.html?m_no=<%=session.u_info.m_no%>" onclick="window.open(this.href,'','width=510, height=320, scrollbars=yes'); return false;">충전하기</a>
+                  	<a href="#" onclick ="goMypage(); return false;" style="margin-left:0px ; width:69px">마이페이지</a>
+<!-- 					<a href="#" onclick ="alert('준비중'); return false;" style="margin-left:0px ; width:69px">마이페이지</a>  -->
+                  <%}else{ %> 
+                    <a href="#" onclick ="goMypage(); return false;" style="margin-left:0px ; width:65px">정산요청</a>
+<!-- 						<a href="#" onclick ="alert('준비중'); return false;" style="margin-left:0px ; width:65px">정산요청</a> -->
+                  <%}%>
+                  </li>
+                </ul>
+         	</div>
+            <div class="right_middle club8_tab">
+            	<div class="wolfharu_tabmenu_select_transform">
+                    <div class="wolfharu_tabmenu_menu">
+                        <ul>
+                            <li><a href="#wolfharu_tabmenu_content_item_1" onclick ="nowType=1; userListAjax(nowType);"><span>영상통화 대기자</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_2" onclick ="nowType=2; userListAjax(nowType);"> <span>전화통화 대기자</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="wolfharu_tabmenu_content">
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_1"></div>
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_2"></div>
+                    </div>
+                </div>
+            </div>
+         </div>
+         
+         
+         
+         
+     </div>
+     </div>
+     
+     <div id="mypageDiv" style="display:none"><iframe src ='/mypage'   style="border:0px;width:100%;;height:800px" name ="mypageFrame" id="mypageFrame" ></iframe></div>
+</div>
+     <div id="myModal1" class="modal">
+		<div class="pop_wp" style ="background: #fff">
+			<ul>
+		    	<li>
+		        	<img src="/images/pop_icon1.png" />
+		        	<p style="padding-left:10px;" id="callMsg">
+		            </p>
+		        </li>
+		        <li>
+		        	<span class="pop_btn1"><a href="#" onclick ="$('#chatFrame')[0].contentWindow.document.requestChat.submit();close_pop(1); return false; ">OK</a></span> <span class="pop_btn2"><a href="#" onclick ="close_pop(1);refuseChat(); $('#chatFrame')[0].contentWindow.callAudio.pause();return false;">CANCEL</a></span>
+		        </li>
+		    </ul>
+		</div>
+	</div>
+		     <div id="myModal3" class="modal">
+		<div class="pop_wp" style ="background: #fff">
+			<ul>
+		    	<li>
+		        	<img src="/images/pop_icon1.png" />
+		        	<p style="padding-left:10px;" id="">상대방이 통화를 종료하였습니다.
+		            </p>
+		        </li>
+		        <li>
+		        	<span class="pop_btn1"><a href="#" onclick ="close_pop(3); return false; ">OK</a></span>
+		        </li>
+		    </ul>
+		</div>
+	</div>
+</body>
+</html>
+
+
+

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="/css/reset_m.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style_m.css"/>
+<title>club1004</title>
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+$("document").ready(function(){
+	getLogin();
+});
+function login(){
+	if($("#m_id").val() ==null || $("#m_id").val() ==""){
+		alert("아이디를 입력하세요.");
+		return false;
+		
+	}
+	if($("#m_password").val() ==null || $("#m_password").val() ==""){
+		alert("패스워드를 입력하세요.");
+		return false;
+		
+	}
+	if($("#idpwSave").is(":checked")){
+		setCookie("uIdcookie",document.getElementById('m_id').value, 30);
+		setCookie("upwcookie", document.getElementById('m_password').value, 30);
+	}else{
+		setCookie("uIdcookie",document.getElementById('m_id').value, 0);
+		setCookie("upwcookie", document.getElementById('m_password').value, 0);
+	}
+	document.loginForm.action ="/login";
+	document.loginForm.submit();
+	
+}
+function setCookie(name, value, expiredays){
+    var todayDate = new Date();
+    todayDate.setDate(todayDate.getDate() + expiredays);
+    document.cookie = name + "=" + escape(value) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+}
+function getCookie(Name) {
+    var search = Name + "=";
+    if (document.cookie.length > 0) { // if there are any cookies
+        offset = document.cookie.indexOf(search);
+        if (offset != -1) {
+            offset += search.length;
+            end = document.cookie.length;
+            if (end == -1)
+                end = document.cookie.length;
+            return unescape(document.cookie.substring(offset, end));
+        }
+    }
+}
+function getLogin(){
+    var form = document.form1;
+    if (getCookie("uIdcookie")){
+        var id_value = getCookie("uIdcookie").split(";")
+        $('#m_id').val(id_value[0]);
+        var pass_value = getCookie("upwcookie").split(";")
+        $('#m_password').val( pass_value[0]);
+        $("#idpwSave").prop("checked", true);
+    }
+}
+</script>
+
+</head>
+<body style="background-color: #d6dbdf;">
+<form name="loginForm" method ="post" >
+<div class="main login_m">
+	<h3 span class="hidden_logo"><img src="/images/m_logo.png" /></h3>
+	<div class="resplogin_wrap">
+    	
+		<div class="input_wrap">
+			
+				
+			<table>
+            	<tr>
+                	<th><label for="user_id" id="user_id1">아이디</label></th>
+                    <td><input type="text" name="m_id" id="m_id" maxlength="25" value="" class="input_text input_text_id_form" title="아이디"></td>
+                    <td rowspan="2"><button type="submit" class="btn_submit_m"  onclick ="login(); return false;"> 로그인</button></td>
+                </tr>
+                <tr>
+                	<th><label for="user_pass" id="user_pass1">비밀번호</label></th>
+                    <td><input type="password" name="m_password" id="m_password" maxlength="16" value="" class="input_text" title="비밀번호" ></td>
+                </tr>
+                <tr>
+                	<th></td>
+                    <td style="height:50px;"><input type="checkbox" id="idpwSave" name="idpwSave" value="Y"/>
+           				<label for="idpwSave"><span></span>아이디, 비밀번호 저장</label></td>
+                    <td><span class="btn_area_m"><a href="#">회원가입</a></span></th>
+                </tr>
+            </table>
+            
+            
+            
+    </div>
+</div>
+</div>
+</form>
+</body>
+</html>

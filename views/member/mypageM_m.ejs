@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="/css/reset_m.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style_m.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform_m.css" />
+<title>club1004</title>
+
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.wolfharu_tabmenu_select_transform').TabMenuSelectTransform();
+	paymentListAjax(1);
+	pointCallAjax(function(){});
+	setTimeout(function() {
+		top.profileChg();
+		profileChg();
+	}, 2000);
+});
+function  paymentListAjax(pageNum){
+	
+	var htmlTag ='';
+	if(pageNum ==null || pageNum ==""){
+		pageNum = 1;
+	}
+	$.ajax({
+        url: '/paymentListAjax',
+        type: 'POST',
+        data : {'nowPage' :pageNum},
+        dataType: 'json',
+        success: function(result) {
+           var pageObj = result.pageObj;
+           var rows  = result.rows;
+           var spanClass ="";
+	       htmlTag += '    <table class="club_right_table2">';
+	       htmlTag += '    <colgroup>';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '    </colgroup>';
+	       htmlTag += '    <tr>';
+	       htmlTag += '        <th scope="row">날짜</th>';
+	       htmlTag += '        <th scope="row">시간</th>';
+	       htmlTag += '        <th scope="row">충전금액</th>';
+	       htmlTag += '        <th scope="row">결제방식</th>';
+	       htmlTag += '        <th scope="row">상태</th>';
+	       htmlTag += '    </tr>';
+		   for(var i=0; i<rows.length; i++){
+		  	 var row = rows[i];
+		       htmlTag += '    <tr>';
+		       htmlTag += '        <td>'+row.reg_date+'</td>';
+		       htmlTag += '        <td>'+row.reg_time+'</td>';
+		       htmlTag += '        <td>'+row.payment+'</td>';
+		       htmlTag += '        <td>'+row.payment_method_kor+'</td>';
+		       if(row.payment_method ==3 ||row.payment_method ==9 ){
+		    	   htmlTag += '        <td>'+row.payment_status_kor+'</td>';
+		       }else{
+		    	   htmlTag += '        <td>완료</td>';
+		       }
+		       htmlTag += '    </tr>';
+		   }
+	       htmlTag += ' </table>';
+	       htmlTag += ' <div class="page_wrap">';
+	       if(pageObj.page_sno >0){
+		       htmlTag += '    <a class="first disabled" href="#" onclick ="paymentListAjax('+pageObj.prevPage+'); return false;"><img src="/images/btn_page_arrow_left.png" alt="이전"></a>';
+           		for(var i =pageObj.page_sno;i<=pageObj.page_eno;i++){
+	          		 var spanClass ="";
+					if (pageObj.nowPage == i){
+						spanClass ="active";
+					}else{
+						spanClass ="";
+					}
+				       htmlTag += '        <a href="#" class="'+spanClass+'" onclick ="paymentListAjax('+i+'); return false;" >'+i+'</a>';
+           		}
+		       htmlTag += '    <a class="last" href="#" onclick ="paymentListAjax('+pageObj.nextPage+'); return false;"><img src="/images/btn_page_arrow_right.png" alt="다음"></a>';
+	       }
+
+	       htmlTag += '</div>';
+	       $("#wolfharu_tabmenu_content_item_2").html(htmlTag);
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+	
+}
+function pointCallAjax(callback){
+	var point  = 0;
+	var ablePoint = 0;
+	$.ajax({
+        url: '/pointViewAjax',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	point  = result.rows[0].m_point ;
+        	$("#pointSpan").html(point.toLocaleString()+" Point");
+        	callback();
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+function profileChg(){
+	$.ajax({
+        url: '/profileChg',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	if(result.m_profile_img){
+        		$("#pro_img").css("background","url(/uploads/"+result.m_profile_img+") no-repeat center center");
+        		$("#pro_img").css("background-size","51px");
+        	}else{
+        		$("#pro_img").css("background","url(/images/icon_w.png) no-repeat center center #e0e0e0");
+        		$("#pro_img").css("background-size","51px");
+        	}
+        	$("#nicknameSt").html(result.m_nickname);
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+</script>
+
+</head>
+
+<body>
+<div class="main" style="padding :0px">
+<!-- 	<h1 span class="sub_logo"><img src="/images/sub_logo.png" /></h1> -->
+	<div class="club_wrap club8_wp culb9" style="padding-bottom:0;">
+    	<div class="club_con_right club8_right club9_right" >
+        	<div class="right_top club9_right">
+            	<ul>
+               	  <li class="right_top_txt">
+               	  	<% if(session.u_info.m_profile_img){%>
+               	  	<div class="id_pro_img_w" style="background: url(/uploads/<%=session.u_info.m_profile_img%>) no-repeat center center ;background-size: 51px;"" id="pro_img"></div>
+               	  	<%}else{%>
+               	  	<div class="id_pro_img_w" ></div>
+               	  	<%}%>
+                  	
+                  	<strong id="nicknameSt"><%=session.u_info.m_nickname%></strong>
+                    <span id="pointSpan"></span>
+                  </li>
+                  
+                  <li class="right_top_btn club8_btn">
+                  	<a href="#" onclick ="parent.goChatFrame(); return false;">통화하기</a>
+                  </li>
+                </ul>
+         	</div>
+            <div class="right_middle club8_tab">
+            	<div class="wolfharu_tabmenu_select_transform">
+                    <div class="wolfharu_tabmenu_menu club9_tab">
+                        <ul>
+<!--                             <li><a href="#wolfharu_tabmenu_content_item_1"><span>충전하기</span></a></li> -->
+                            <li><a href="#wolfharu_tabmenu_content_item_2" onclick ="paymentListAjax(1);"><span>충전내역</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_3"><span>정보변경</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="wolfharu_tabmenu_content" style="width:100%; padding-bottom:60px;">
+<!--                         <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_1"> -->
+<!--                             <iframe src ="https://club1004-pay.bstorm.co.kr/member_payment.html?m_no=<%=u_info.m_no%>"  style ="border:0; width:100% ; height:260px" ></iframe> -->
+<!--                         </div> -->
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_2"><!-- 충전내역  DIV--> 
+
+                         </div>
+                          <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_3">
+                          		<%include modify_info%>
+                         </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+         
+         
+         
+         
+         
+     </div>
+</div>
+</body>
+</html>
+
+
+

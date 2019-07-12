@@ -1,0 +1,433 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform.css" />
+<title>club1004</title>
+
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.wolfharu_tabmenu_select_transform').TabMenuSelectTransform();
+});
+</script>
+
+
+</head>
+
+<body>
+<div class="main">
+	<h1 span class="sub_logo"><img src="/images/sub_logo.png" /></h1>
+	<div class="club_wrap">
+    	<div class="club_con_left">
+        	<div class="left_top">
+            	<ul>
+               	  <li class="left_top_txt">영등포지점ID:1000</li>
+                  <li class="left_top_btn"><a href="#"><img src="/images/refresh_btn.jpg" /></a></li>
+                </ul>
+         	</div>
+            <div class="left_middle">
+                <table class="club_left_table">
+                    <tr>
+                        <th scope="row">1번방 (ID: 10001)</th>
+                        <td>
+                        	<ul>
+                            	<li class="club1_1_btn1"><a href="#">영상</a></li>
+                                <li class="club1_1_btn2"><a href="#">전화</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2번방 (ID: 10002)</th>
+                        <td>
+                            <ul>
+                            	<li class="club1_1_btn3"><a href="#">영상 대기중</a></li>
+                                <li class="club1_1_btn4"><a href="#">퇴실</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3번방 (ID: 10003)</th>
+                        <td>
+                            <ul>
+                            	<li class="club1_1_btn5"><a href="#">전화 대기중</a></li>
+                                <li class="club1_1_btn4"><a href="#">퇴실</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4번방 (ID: 10004)</th>
+                        <td>
+                            <ul>
+                            	<li class="club1_1_btn6"><a href="#">영상 통화 중</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5번방 (ID: 10005)</th>
+                        <td>
+                             <ul>
+                            	<li class="club1_1_btn7"><a href="#">전화 통화 중</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="club_con_right">
+        	<div class="right_top">
+            	<ul>
+               	  <li class="right_top_txt">영등포지점ID:<span style="color:#de4646;">1000</span> <span class="charge_btn"><a href="/club/pop/club1_pop1.html" onclick="window.open(this.href,'','width=510, height=320, scrollbars=yes'); return false;">충전</a></span></li>
+                  <li class="right_top_btn">
+                  	<label for="calendar" id=""></label>
+					<input type="text" name="j_calendar" id="" maxlength="25" value="" class="input_text input_text_id_form" title="아이디" style="padding: 0.2em .5em; width:100px;"> <a href="#"><img src="/images/calendar.jpg" / style="vertical-align:middle;"></a> ~ <label for="calendar" id=""></label>
+					<input type="text" name="j_calendar" id="" maxlength="25" value="" class="input_text input_text_id_form" title="아이디" style="padding: 0.2em .5em; width:100px;">  <a href="#"><img src="/images/calendar.jpg" / style="vertical-align:middle;"></a> <span class="search_btn"><a href="#">검색</a></span>
+                  </li>
+                </ul>
+         	</div>
+            <div class="right_middle">
+            	<div class="wolfharu_tabmenu_select_transform">
+                    <div class="wolfharu_tabmenu_menu">
+                        <ul>
+                            <li><a href="#wolfharu_tabmenu_content_item_1"><span>통화내역</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_2"><span>충전내역</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_3"><span>기타</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="wolfharu_tabmenu_content">
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_1">
+                            <table class="club_right_table">
+                                <colgroup>
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                </colgroup>
+                                <tr>
+                                    <th scope="row">날짜</th>
+                                    <th scope="row">방</th>
+                                    <th scope="row">시작시간</th>
+                                    <th scope="row">종료시간</th>
+                                    <th scope="row">사용시간</th>
+                                    <th scope="row">사용금액</th>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>1번</td>
+                                    <td>12:10:16</td>
+                                    <td>13:10:16</td>
+                                    <td>01:10:05</td>
+                                    <td>17,750</td>
+                                </tr>
+                             </table>
+                             <div class="page_wrap">
+                                <a class="first disabled" href="#"><img src="/images/btn_page_arrow_left.png" alt="이전"></a>
+                                
+                                    <a href="#" class="active">1</a>
+                                
+                                    <a href="#" class="">2</a>
+                                
+                                    <a href="#" class="">3</a>
+                                
+                                <a class="last" href="#"><img src="/images/btn_page_arrow_right.png" alt="다음"></a>
+                            </div>
+                        </div>
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_2">
+                            <table class="club_right_table2">
+                                <colgroup>
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                </colgroup>
+                                <tr>
+                                    <th scope="row">날짜</th>
+                                    <th scope="row">시간</th>
+                                    <th scope="row">충전금액</th>
+                                    <th scope="row">결제방식</th>
+                                    <th scope="row">상태</th>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>카드</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>카드</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>카드</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>카드</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>카드</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>휴대폰</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>휴대폰</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>휴대폰</td>
+                                    <td>완료</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>무통장입금</td>
+                                    <td>미확인</td>
+                                </tr>
+                                <tr>
+                                    <td>18.07.16</td>
+                                    <td>12:10:16</td>
+                                    <td>100,000</td>
+                                    <td>무통장입금</td>
+                                    <td>미확인</td>
+                                </tr>
+                             </table>
+                             <div class="page_wrap">
+                                <a class="first disabled" href="#"><img src="/images/btn_page_arrow_left.png" alt="이전"></a>
+                                
+                                    <a href="#" class="active">1</a>
+                                
+                                    <a href="#" class="">2</a>
+                                
+                                    <a href="#" class="">3</a>
+                                
+                                <a class="last" href="#"><img src="/images/btn_page_arrow_right.png" alt="다음"></a>
+                            </div>
+                        </div>
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_3">
+                            <div class="club1_3_bank">
+                            	<h4>입금 계좌번호 안내</h4>
+                                <ul>
+                                	<li>·은행: 00은행</li>
+                                    <li>·계좌번호: 000-000-0000000</li>
+                                    <li>·예금주: 00000</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="right_bottom">
+            	<table class="club_right_table">
+                	<colgroup>
+                    	<col width="" />
+                        <col width="" />
+                        <col width="" />
+                        <col width="" />
+                        <col width="" />
+                        <col width="" />
+                    </colgroup>
+                    <tr>
+                        <th scope="row">날짜</th>
+                        <th scope="row">방</th>
+                        <th scope="row">시작시간</th>
+                        <th scope="row">종료시간</th>
+                        <th scope="row">사용시간</th>
+                        <th scope="row">사용금액</th>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                    <tr>
+                        <td>18.07.16</td>
+                        <td>1번</td>
+                        <td>12:10:16</td>
+                        <td>13:10:16</td>
+                        <td>01:10:05</td>
+                        <td>17,750</td>
+                    </tr>
+                 </table>
+                 
+            </div>-->
+        </div>
+     </div>
+</div>
+</body>
+</html>
+
+
+

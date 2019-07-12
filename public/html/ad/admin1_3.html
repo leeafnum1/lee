@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>admin</title>
+<link rel="stylesheet" href="/css/style.css" />
+
+
+
+</head>
+
+<body>
+<div id="wrap">
+ <div id="header">
+ 	<div class="logo"><a href="/html/_eadmin/admin.php"><img src="/images/ad/admin_logo.jpg" /></a></div>
+    <div style="width:10px; height:42px; background:#fff; float:left;"></div>
+    <div id="topMenu" >
+		<ul>
+			<li class="topMenuLi">
+                <a class="menuLink" href="/ad/admin1_1.html">회원관리</a>
+            </li>
+			<li>|</li>
+            <li class="topMenuLi">
+                <a class="menuLink" href="/ad/admin2_1.html">충전내역</a>
+            </li>
+			<li>|</li>
+            <li class="topMenuLi">
+                <a class="menuLink" href="/ad/admin3_1.html">정산요청내역</a>
+            </li>
+			<li>|</li>
+            <li class="topMenuLi">
+                <a class="menuLink" href="/ad/admin4_1.html">통화내역</a>
+			</li>
+            <li>|</li>
+            <li class="topMenuLi">
+                <a class="menuLink" href="/ad/admin5_1.html">지점 방생성/삭제</a>
+			</li>
+            <li>|</li>
+            <li class="topMenuLi">
+                <a class="menuLink" href="/ad/admin6_1.html">여성회원 등록/삭제</a>
+			</li>
+			
+            
+		</ul>
+	</div>
+ </div>
+  
+ <div id="main">
+   <div id="left_main">
+   		<a href="/ad/admin1_1.html"><img src="/images/ad/home_bt.gif" /></a>&nbsp;<a href="#"><img src="/images/ad/logout_bt.gif" /><!--<img src="/images/ad/login_bt.gif" />--></a>
+        <a href="#" class="pw_change_bt"><img src="/images/ad/pw_change_bt.gif" /></a>
+   </div>
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/ad/icon_title.gif" width="12" height="12">회원관리</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>회원관리</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/ad/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3 ad_table">
+          <tr>
+            <th align="center">아이디</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">100001</td>
+          </tr>
+          <tr>
+            <th align="center">비밀번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="user_pass" id=""></label>
+                <input type="text" name="j_password" id="" maxlength="16" value="12345" class="input_text input_text_id_form" title="비밀번호">
+            </td>
+          </tr>
+          <tr>
+            <th align="center">대화명</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">낭만</td>
+          </tr>
+          <tr>
+            <th align="center">성별</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">남성</td>
+          </tr>
+          <tr>
+            <th align="center">프로필사진</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<ul>
+                                            	<li style="width:120px; float:left;">
+                                                	<div class="pro_img_m"></div>
+                                                </li>
+                                                <li>
+                                                    <span class="mem_btn" style="display:block; margin-bottom:10px;"><a href="#" style="margin-left:0;">삭제</a></span>
+                                                    <div class="filebox bs3-primary">
+                                                        <input class="upload-name" value="파일선택" disabled="disabled">
+                            
+                                                        <label for="ex_filename">찾기</label> 
+                                                      <input type="file" id="ex_filename" class="upload-hidden"> 
+                                                    </div>
+
+
+													<script>
+                                                    	$(document).ready(function(){
+														  var fileTarget = $('.filebox .upload-hidden');
+														
+															fileTarget.on('change', function(){
+																if(window.FileReader){
+																	var filename = $(this)[0].files[0].name;
+																} else {
+																	var filename = $(this).val().split('/').pop().split('\\').pop();
+																}
+														
+																$(this).siblings('.upload-name').val(filename);
+															});
+														}); 
+
+
+                                                    </script>
+
+                                                    <p class="mem_txt1" style="margin:10px 0 0 0;">000X000픽셀, jpg or gif 이미지 권장</p>
+                                            </li>
+                                            </ul>
+            </td>
+          </tr>
+          <tr>
+            <th align="center">주소</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="text" name="" id="" class="input_text input_text_id_form" style="width:90%;">
+            </td>
+          </tr>
+          <tr>
+            <th align="center">요금</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<ul>
+                	<li>
+                    	분당요금(영상)
+                         <label for="" id=""></label>
+               			 <input type="text" class="input_text input_text_id_form" title="비밀번호" value="250" maxlength="16"> 원
+                	</li>
+                    <li style="margin-top:10px;">
+                    	분당요금(전화) 
+                        <label for="" id=""></label>
+                    	<input type="text" class="input_text input_text_id_form" title="비밀번호" value="150" maxlength="16"> 원
+                    </li>
+                     <li style="margin-top:10px;">
+                    	빈통화시간조정 
+                        <label for="" id=""></label>
+                    	<input type="text" class="input_text input_text_id_form" title="비밀번호" value="5" maxlength="16"> 초
+                    </li>
+                    </ul>
+            </td>
+          </tr>
+          <tr>
+            <th align="center">현재포인트</th>
+            <td width="30%" align="center" bgcolor="#FFFFFF">100,000 포인트</td>
+            <th align="center" bgcolor="#FFFFFF">관리자 충전</th>
+            <td width="30%" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="text" name="" id="" class="input_text input_text_id_form">
+                <span class="mem_btn" style="margin-bottom:10px;"><a href="#" style="margin-left:2px;">충전</a></span>
+            </td>
+          </tr>
+          </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center">
+            	<div class="ad_btn_area">
+            		<span class="conf_btn"><a href="#">확인</a></span>
+            	</div>
+            </td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+ 
+
+ <div id="footer">
+ 	<div id="copy">
+ 		Copyright ⓒ 2018 club1004. All rights reserved.
+    </div>
+ </div>
+ 
+</div>
+</body>
+</html>

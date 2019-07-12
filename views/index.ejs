@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<style>
+.bro_txt2 p{font-size:16px; text-align:center; margin:70px 0 10px 0; font-weight:bold;}
+.bro_txt2 span{border:2px solid #e0e0e0; padding:15px 20px; display:block; width:310px; margin:0 auto; line-height:24px;}
+</style>
+<title>club1004</title>
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+$("document").ready(function(){
+	getLogin();
+	if(detectIE()){
+		$('#ie').css('display','block');
+		$('#login').css('display','none');
+	}else{
+		$('#login').css('display','block');
+	}
+});
+function login(){
+	if($("#m_id").val() ==null || $("#m_id").val() ==""){
+		alert("아이디를 입력하세요.");
+		return false;
+		
+	}
+	if($("#m_password").val() ==null || $("#m_password").val() ==""){
+		alert("패스워드를 입력하세요.");
+		return false;
+		
+	}
+	if($("#idpwSave").is(":checked")){
+		setCookie("uIdcookie",document.getElementById('m_id').value, 30);
+		setCookie("upwcookie", document.getElementById('m_password').value, 30);
+	}else{
+		setCookie("uIdcookie",document.getElementById('m_id').value, 0);
+		setCookie("upwcookie", document.getElementById('m_password').value, 0);
+	}
+	document.loginForm.action ="/login";
+	document.loginForm.submit();
+	
+}
+function detectIE() {
+    var ua = window.navigator.userAgent;
+	var check=false;
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        // IE 10 or older => return version number
+        check=true;
+        return check;
+    }
+
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11 => return version number
+        check=true;
+        var rv = ua.indexOf('rv:');
+        return check;
+    }
+
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+    	check=true;
+       // Edge (IE 12+) => return version number
+       return check;
+    }
+
+    // other browser
+    return check;
+}
+function setCookie(name, value, expiredays){
+    var todayDate = new Date();
+    todayDate.setDate(todayDate.getDate() + expiredays);
+    document.cookie = name + "=" + escape(value) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+}
+function getCookie(Name) {
+    var search = Name + "=";
+    if (document.cookie.length > 0) { // if there are any cookies
+        offset = document.cookie.indexOf(search);
+        if (offset != -1) {
+            offset += search.length;
+            end = document.cookie.length;
+            if (end == -1)
+                end = document.cookie.length;
+            return unescape(document.cookie.substring(offset, end));
+        }
+    }
+}
+function getLogin(){
+    var form = document.form1;
+    if (getCookie("uIdcookie")){
+        var id_value = getCookie("uIdcookie").split(";")
+        $('#m_id').val(id_value[0]);
+        var pass_value = getCookie("upwcookie").split(";")
+        $('#m_password').val( pass_value[0]);
+        $("#idpwSave").prop("checked", true);
+    }
+}
+</script>
+
+</head>
+<body>
+<form name="loginForm" method ="post" >
+<div class="main">
+	<div class="resplogin_wrap" id ="login">
+    	<h3 span class="hidden_logo"><img src="/images/logo.jpg" /></h3>
+		<div class="login_box">
+			<fieldset>
+				<legend>로그인 정보 입력</legend>
+				<div class="input_wrap">
+					<span class="input_box">
+                    	<label for="m_id" id="user_id1">아이디</label>
+						<input type="text" name="m_id" id="m_id" maxlength="25" value="" class="input_text input_text_id_form" title="아이디">
+					</span>
+					<span class="input_box">
+                    	<label for="m_password" id="user_pass1">비밀번호</label>
+						<input type="password" name="m_password" id="m_password" maxlength="16" value="" class="input_text" title="비밀번호" >
+						</span>
+					<span class="check_box">
+						<input type="checkbox"  name="idpwSave"  id ="idpwSave"  />
+           				<label for="idpwSave"><span></span>아이디, 비밀번호 저장</label>
+                        <span class="btn_area"><a href="#">회원가입</a></span>
+<!-- 						<span class="btn_area"><a href="#" onclick ="alert('준비중'); return false;">회원가입</a></span> -->
+					</span>
+					<button  class="btn_submit" onclick ="login(); return false;">로그인</button>
+				</div>
+			</fieldset>
+				
+		
+    </div>
+</div>
+<div class="mem_wrap" style="height:45%;display:none" id ="ie" >
+  	<h3 span class="hidden_logo"><img src="/images/logo.jpg" /></h3>
+	<div class="login_box">
+      	<h4 style="text-align:center;">Windows7이상 구글 크롬 브라우저를 이용해 주세요</h4>
+	
+          <div class="confirm_btn_area" style="margin-top: 20px;">
+          	<a href="https://www.google.com/intl/ko/chrome/browser/"><img src="/images/bro_down_btn.jpg" /></a>
+          </div>
+          <div class="bro_txt2">
+          	<p>사용권장 브라우저</p>
+              <span>
+              	PC         : Chrome 63 ver 이상<br />
+			Mobile  : Mobile Chrome, FireFox IOS11 이상 Safari
+              </span>
+          </div>
+  </div>
+</div>
+</div>
+</form>
+</body>
+</html>

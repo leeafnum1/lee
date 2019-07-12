@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>What`s up</title>
+<link rel="stylesheet" href="css/reset.css" type="text/css"/>
+<style>
+
+.chrome_wp{background-color:rgba(33, 87, 71, 0.8); padding:30px 0;}
+.chrome_wp h3{margin-bottom:10px;}
+.chrome_wp ul{border:1px solid #ffffff; padding:10px 0; margin:0 auto; overflow:hidden; width:60%; color:#ffffff; text-align:center; line-height:149%;}
+.chrome_wp ul li{display:inline-block;}
+.chrome_wp p{color:#ffffff; font-size:18px; margin-bottom:6px;}
+
+.chrome_btn a {
+    display: inline-block;
+    width: 130px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 500;
+    background: url(/images/index/chrome_bt_icon.png) no-repeat 13% center #215747;
+    text-align: center;
+    text-decoration: none;
+	border:5px solid #ffffff;
+	padding-left:50px;
+	margin-bottom:20px;
+}
+
+.chrome_p_tit{float:left; width:20%; text-align:left;  padding-left:50px;}
+.chrome_p_txt{float:left; width:60%; text-align:left;}
+
+.main_copy ul li a{color:#dedede;">
+</style>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script type='text/javascript'>
+
+$("document").ready(function(){
+
+});
+
+ 
+ function localLogin(){
+	 $("#user_id").val("857720059");
+     $("#user_nickname").val("테스트페이스북");
+     $("#login_path").val("facebook");
+	 document.userInfo.action ="/user/login";
+     document.userInfo.submit();
+ }
+ function localLogin2(){
+	 $("#user_id").val("657720059");
+     $("#user_nickname").val("테스트구글");
+     $("#login_path").val("google");
+	 document.userInfo.action ="/user/login";
+     document.userInfo.submit();
+ }
+ function localLogin3(){
+	 $("#user_id").val("111");
+     $("#user_nickname").val("테스트카카오");
+     $("#login_path").val("kakao");
+	 document.userInfo.action ="/user/login";
+     document.userInfo.submit();
+ }
+ function localLogin4(){
+	 $("#user_id").val("222");
+     $("#user_nickname").val("테스트네이버");
+     $("#login_path").val("naver");
+	 document.userInfo.action ="/user/login";
+     document.userInfo.submit();
+ }
+ 
+
+</script>
+</head>
+
+<body>
+<form name="userInfo" method="post" >
+	<input id="user_id" name ="user_id" type="hidden" value =""  />
+	<input id="user_nickname" name ="user_nickname" type="hidden" value="" />
+	<input id="user_photo" name ="user_photo" type="hidden" value="" />
+	<input id="login_path" name ="login_path" type="hidden" value= "" />
+	
+</form>
+	<div class="main" style="position:relative; height:1000px;">
+		<div class="main_txt">
+        	<ul>
+            	<li class="txt1"></li>
+                <li class="txt2"></li>
+                <li class="txt3"></li>
+                <li class="sns" id ="login" style ="display: block">
+                	<ul>
+                    	<li class="sns1"><a href="#" onclick="localLogin(); return false;"><img src="images/index/sns1.png" /></a></li>
+                        <li class="sns2"><a href="#" onclick="localLogin2(); return false;"><img src="images/index/sns2.png" /></a></li>
+						<li class="sns3"><a href="#" onclick="localLogin3(); return false;"><img src="images/index/sns3.png" /></a></li>
+                        <li class="sns4"><a href="#" onclick="localLogin4(); return false;"><img src="images/index/sns4.png" /></a></li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div></div>
+        <div class="main_copy" style="position:absolute; bottom:-63px; background:#333333; width:100%; padding:20px 0;">
+			<ul style="width:1200px; margin:0 auto; overflow: hidden;">
+				<li>
+					<a href="/pop/terms_of_use.html" onclick="window.open(this.href,'','width=810, height=600, scrollbars=yes'); return false;">이용약관</a>&nbsp;&nbsp; | &nbsp;&nbsp; 
+					<a href="/pop/privacy_policy.html" onclick="window.open(this.href,'','width=810, height=600, scrollbars=yes'); return false;">개인정보처리방침</a>
+				</li>
+				<li style="margin-top:10px; color:#dedede;">
+					Netcom153, Business Number 106-86-44275 </br>
+					Ceo: Kwon Myeong Chu</br>
+					Address: 205, Hangang-daero, Yongsan-gu, Seoul, Republic of Korea</br>
+					070-7552-0200
+				</li>
+			</ul>
+		</div>
+    </div>
+</body>
+</html>

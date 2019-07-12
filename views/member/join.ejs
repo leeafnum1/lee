@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<title>club1004</title>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script type='text/javascript'>
+var duplId = 0;
+var duplNickname =0;
+
+function duplCheck(type,duplText){
+	if(duplText ==null || duplText ==""){
+		alert("체크할 값을 입력하시길바랍니다.");
+		return ;
+	}
+	$.ajax({
+        url: '/duplCheck',
+        type: 'POST',
+        data: {'type': type, 'duplText' : duplText},
+        success: function(result) {
+        	var alertText ="";
+        	if(result == 'ok'){
+        		if(type == 'm_id'){
+        			duplId = 1;
+            		alertText = "아이디";
+            	}else{
+            		duplNickname = 1;
+            		alertText = "대화명";
+            	} 
+        		alert("사용가능한 "+alertText+" 입니다.");
+        	}else{
+        		if(type == 'm_id'){
+        			duplId = 0;
+            		alertText = "아이디";
+            	}else{
+            		duplNickname = 0;
+            		alertText = "대화명";
+            	} 
+        		alert("사용 불가능한 "+alertText+" 입니다.");
+        	}      
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function join(){
+	var pattern1 = /[0-9]/;
+    var pattern2 = /[a-zA-Z]/;
+    var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
+
+	
+	if($("#m_id").val() == null || $("#m_id").val() ==''){
+		alert("아이디를 입력해주세요.");
+		$("#m_id").focus();
+		return;
+	}
+    if(!pattern1.test($("#m_id").val())||!pattern2.test($("#m_id").val())||$("#m_id").val().length<8){
+        alert("아이디는 영문+숫자 조합  8자리 이상으로 구성하여야 합니다.");
+        return false;
+    } 
+	if($("#m_password").val() == null || $("#m_password").val() ==''){
+		alert("비밀번호를 입력해주세요.");
+		$("#m_password").focus();
+		return;
+	}
+	if($("#m_password2").val() == null || $("#m_password2").val() ==''){
+		alert("비밀번호 확인을 입력해주세요.");
+		$("#m_password2").focus();
+		return;
+	}
+	if($("#m_password").val() != $("#m_password2").val()  ){
+		alert("비밀번호가 일치하지않습니다..");
+		$("#m_password2").focus();
+		return;
+	}
+    if(!pattern1.test($("#m_password").val())||!pattern2.test($("#m_password").val())||$("#m_password").val().length<8){
+        alert("비밀번호는 영문+숫자 조합  8자리 이상으로 구성하여야 합니다.");
+        return false;
+    } 
+	if($('input[name="m_gender"]:checked').val()==null || $('input[name="m_gender"]:checked').val() ==""){
+		alert("성별을 선택해주세요.");
+		return;
+	}
+	if($("#m_nickname").val() == null || $("#m_nickname").val() ==''){
+		alert("닉네임을 입력해주세요.");
+		$("#m_nickname").focus();
+		return;
+	}
+    if(pattern3.test($("#m_nickname").val())){
+        alert("닉네임엔 특수문자를 포함 할 수 없습니다..");
+        return false;
+    }
+    if(duplId == 0){
+    	alert("아이디 중복체크를 하시길 바랍니다.");
+    	return false;
+    
+    }
+    if(duplNickname == 0){
+    	alert("대화명  중복체크를 하시길 바랍니다.");
+    	return false;
+    
+    }
+	document.m_form.action="/join_ok";
+	document.m_form.submit();
+	
+}
+</script>
+</head>
+<body>
+<form name ="m_form" method="post">
+<div class="main">
+	<div class="mem_wrap">
+    	<h3 span class="hidden_logo"><img src="/images/logo.jpg" /></h3>
+		<div class="login_box">
+        	<h4>회원가입</h4>
+			<table class="member_table">
+                <tr>
+                    <th scope="row">아이디</th>
+                    <td>
+                    	<label for="m_id" id=""></label>
+						<input type="text" name="m_id" id="m_id" maxlength="25" value="" class="input_text input_text_id_form" title="아이디"  onkeyup="duplId =0;"/><span class="mem_btn"><a href="#" onclick ="duplCheck('m_id',$('#m_id').val()); return false;">중복확인</a></span><p class="mem_txt1">*영문, 숫자조합 8글자 이상</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">비밀번호</th>
+                    <td>
+                    	<label for="m_password" id=""></label>
+						<input type="password" name="m_password" id="m_password" maxlength="16" value="" class="input_text input_text_id_form" title="비밀번호" /><p class="mem_txt1">*영문, 숫자조합 8글자 이상</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">비밀번호 확인</th>
+                    <td>
+                    	<label for="m_password2" id=""></label>
+						<input type="password" name="m_password2" id="m_password2" maxlength="16" value="" class="input_text input_text_id_form" title="비밀번호확인" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">성별</th>
+                    <td>
+                    	<input type="radio" id="m_gender_m" name ="m_gender" value ="M" />
+                        <label for="m_gender_m">남성</label>&nbsp;&nbsp;&nbsp;
+                        <input type="radio" id="m_gender_f" name ="m_gender" value ="F" />
+                        <label for="m_gender_f">여성</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">대화명</th>
+                    <td>
+                    	<label for="m_nickname" id=""></label>
+						<input type="text" name="m_nickname" id="m_nickname" maxlength="25" value="" class="input_text input_text_id_form" title="대화명"  onkeyup="duplNickname =0;"/><span class="mem_btn"><a href="#" onclick ="duplCheck('m_nickname',$('#m_nickname').val()); return false;">중복확인</a></span><p class="mem_txt1">*특수문자 제외 8글자 이내</p>
+                    </td>
+                </tr>
+            </table>
+            <div class="confirm_btn_area">
+            	<span class="conf_btn"><a href="#" onclick ="join();return false;">확인</a></span>
+            </div>
+    </div>
+</div>
+</form>
+</body>
+</html>

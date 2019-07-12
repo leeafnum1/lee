@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform.css" />
+<title>club1004</title>
+<style>
+      /* The Modal (background) */
+      .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+  
+      /* Modal Content/Box */
+      .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto; /* 15% from the top and centered */
+          padding: 20px;
+          border: 1px solid #888;
+          width: 30%; /* Could be more or less, depending on screen size */                          
+      }
+</style>
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	document.mainForm.target ="chatFrame";
+	document.mainForm.submit();
+	mainOnAjax();
+	var usetListInterval = setInterval(function(){
+// 		userListAjax();
+		pointCallAjax(function(){});
+	}, 3000);
+});
+window.onbeforeunload = function(evt) {    	
+   	if (event.clientY < 0) {    		
+          var state = window.document.readyState;            
+          if(state == 'complete' || state == 'loading'){      
+        	  mainOutAjax();
+          }
+   	}else if(event.clientY == undefined){
+          var state = window.document.readyState;            
+          if(state == 'complete' || state == 'loading'){              
+        	  mainOutAjax();
+          }
+   	}  
+};
+$(window).unload(function() {
+     var state = window.document.readyState;
+     if(state == 'complete' || state == 'loading'){
+    	 mainOutAjax();
+     }
+});
+function mainOnAjax(){
+	$.ajax({
+        url: '/mainon',
+        type: 'GET',
+        success: function(result) {
+//         	console.log(result);         
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function mainOutAjax(){
+	$.ajax({
+        url: '/mainout',
+        type: 'GET',
+        success: function(result) {
+//         	console.log(result);         
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+
+function chatRequest(target_m_no,target_m_id,target_m_nickname){
+	$('#chatFrame')[0].contentWindow.chatRequest(target_m_no,target_m_id,target_m_nickname);
+}
+function userListAjax2(){
+	
+	$.ajax({
+        url: '/userListAjax',
+        dataType: 'json',
+        type: 'POST',
+        data: {'type':'Y'},
+        success: function(result) {
+                    
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function pointCallAjax(callback){
+	var point  = 0;
+	var ablePoint = 0;
+	$.ajax({
+        url: '/pointViewAjax',
+        type: 'POST',
+        dataType: 'json',
+        data:{"branch_no": '<%=session.u_info.branch_no%>'},
+        success: function(result) {
+        	point  = result.rows[0].m_point ;
+        	$("#pointValue").val(point);
+        	callback();
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+function close_pop(flag) {
+    $('#myModal'+flag).hide();
+};
+
+function refuseChat(){
+	var data ={
+	       	type:"requestRefusal",
+	       	roomno : $('#chatFrame').contents().find('#roomno').val()
+	    };
+		$('#chatFrame')[0].contentWindow.con.send(data);
+	   
+}
+</script>
+
+
+</head>
+
+<body >
+<form name="mainForm" method ="post" action="/chatroom">
+	<input type="hidden" name="roomno" id ="roomno" value ="<%=session.u_info.m_id%>" />
+	<input type="hidden" name="chatType" id ="chatType" value ="<%=session.u_info.m_status%>" />
+	<input type="hidden" name="pointValue" id ="pointValue" value ="" />
+</form>
+<div class="main">
+	<h1 span class="sub_logo"><img src="/images/sub_logo.png" /></h1>
+	<div style="
+    float: right;
+    position: relative;
+    margin-top: -63px;
+    margin-right: 130px;
+">
+    <a href="/logout" style="
+    display: inline-block;
+    width: 80px;
+    height: 26px;
+    line-height: 26px;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+    background: #7d7d7d;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 17px;
+    border-radius: 2px;
+    right:;
+">로그아웃</a>
+</div>
+	<div class="club_wrap" style="padding-bottom:0; background:none; width:480px;">
+    	<div class="club_con_left">
+        	<iframe src =''   style="border:0px;width:485px;height:805px" name ="chatFrame" id="chatFrame"></iframe>
+        </div>
+     </div>
+</div>
+     <div id="myModal1" class="modal">
+		<div class="pop_wp" style ="background: #fff">
+			<ul>
+		    	<li>
+		        	<img src="/images/pop_icon1.png" />
+		        	<p style="padding-left:10px;" id="callMsg">
+		            </p>
+		        </li>
+		        <li>
+		        	<span class="pop_btn1"><a href="#" onclick ="$('#chatFrame')[0].contentWindow.document.requestChat.submit();close_pop(1); return false; ">OK</a></span> <span class="pop_btn2"><a href="#" onclick ="close_pop(1);refuseChat(); $('#chatFrame')[0].contentWindow.callAudio.pause();return false;">CANCEL</a></span>
+		        </li>
+		    </ul>
+		</div>
+	</div>
+		<div id="myModal2" class="modal">
+		<div class="pop_wp" style ="background: #fff">
+			<ul>
+		    	<li>
+		        	<img src="/images/pop_icon1.png" />
+		        	<p style="padding-left:10px;" id="">
+		        	통화가 종료되었습니다.
+		            </p>
+		        </li>
+		        <li>
+		        	<span class="pop_btn1"><a href="#" onclick ="close_pop(2); location.href ='/logout';  ">OK</a></span>
+		        </li>
+		    </ul>
+		</div>
+	</div>
+		     <div id="myModal3" class="modal">
+		<div class="pop_wp" style ="background: #fff">
+			<ul>
+		    	<li>
+		        	<img src="/images/pop_icon1.png" />
+		        	<p style="padding-left:10px;" id="">상대방이 통화를 종료하였습니다.
+		            </p>
+		        </li>
+		        <li>
+		        	<span class="pop_btn1"><a href="#" onclick ="close_pop(3); return false; ">OK</a></span>
+		        </li>
+		    </ul>
+		</div>
+	</div>
+</body>
+</html>
+
+
+

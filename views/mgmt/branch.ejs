@@ -1,0 +1,162 @@
+<%include top%>
+<script type='text/javascript'>
+function branch_insert(){
+	var pattern1 = /[0-9]/;
+    var pattern2 = /[a-zA-Z]/;
+    var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
+
+	
+	if($("#branch_name").val() == null || $("#branch_name").val() ==''){
+		alert("지점명을 입력해주세요.");
+		$("#branch_name").focus();
+		return;
+	}
+	if($("#branch_code").val() == null || $("#branch_code").val() ==''){
+		alert("지점번호를 입력해주세요.");
+		$("#branch_code").focus();
+		return;
+	}
+	if($("#branch_room_no").val() == null || $("#branch_room_no").val() ==''){
+		alert("방번호를 입력해주세요.");
+		$("#branch_room_no").focus();
+		return;
+	}
+    if(!pattern1.test($("#branch_code").val())||pattern2.test($("#branch_code").val())||$("#branch_code").val()<1000 ||$("#branch_code").val()>1999){
+        alert("지점번호는 1000 ~ 1999 까지 숫자로만 가능합니다.");
+        return false;
+    } 
+    if(!pattern1.test($("#branch_room_no").val())||pattern2.test($("#branch_room_no").val())||$("#branch_room_no").val()<1 ||$("#branch_room_no").val()>99){
+        alert("방번호는 1 ~ 99 까지 숫자로만 가능합니다.");
+        return false;
+    } 
+    var branch_name =$("#branch_name").val();
+    var branch_code =$("#branch_code").val();
+    var branch_room_no =$("#branch_room_no").val();
+    $.ajax({
+        url: '/mgmt/branch_insert',
+        type: 'POST',
+        data: {'branch_name': branch_name, 'branch_code' : branch_code, 'branch_room_no' : branch_room_no},
+        success: function(result) {
+       		alert(result);
+
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+
+function branch_delete(){
+// 	if($("#branch_name").val() == null || $("#branch_name").val() ==''){
+// 		alert("지점명을 입력해주세요.");
+// 		$("#branch_name").focus();
+// 		return;
+// 	}
+	if($("#branch_code").val() == null || $("#branch_code").val() ==''){
+		alert("지점번호를 입력해주세요.");
+		$("#branch_code").focus();
+		return;
+	}
+	if($("#branch_room_no").val() == null || $("#branch_room_no").val() ==''){
+		alert("방번호를 입력해주세요.");
+		$("#branch_room_no").focus();
+		return;
+	}
+//     var branch_name =$("#branch_name").val();
+    var m_id =$("#branch_code").val()+""+$("#branch_room_no").val();
+    $.ajax({
+        url: '/mgmt/deleteMember',
+        type: 'POST',
+        data: {'m_id': m_id},
+        success: function(result) {
+       		alert(result);
+
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+</script>
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/mgmt/icon_title.gif" width="12" height="12">지점 방생성/삭제</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>지점 방생성/삭제</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/mgmt/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3 ad_table">
+          <tr>
+            <th align="center">지점명</th>
+            <td width="60%" colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="text" class="input_text input_text_id_form" name ="branch_name" id ="branch_name" />
+            </td>
+          </tr>
+          <tr>
+            <th align="center">지점번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="text" class="input_text input_text_id_form"  style="width:10%" name ="branch_code" id ="branch_code" />
+                <span class="mem_txt1">1000~1999 중에서 입력</span>
+            </td>
+          </tr>
+          <tr>
+            <th align="center">방번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+              <label for="" id=""></label>
+              <input type="text" class="input_text input_text_id_form" style="width:5%;" name ="branch_room_no" id ="branch_room_no" />
+              <span class="mem_txt1">1~99 중에서 입력</span>
+              </td>
+          </tr>
+          </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center">
+            	<div class="ad_btn_area">
+            		<span class="conf_btn"><a href="#" onclick ="branch_insert(); return false;">생성</a></span>
+                    <span class="conf_btn2"><a href="#" onclick ="branch_delete(); return false;">삭제</a></span>
+            	</div>
+            </td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+ 
+
+<%include bottom%>

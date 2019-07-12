@@ -1,0 +1,150 @@
+<%include top%>
+<script type='text/javascript'>
+function woman_insert(){
+	var pattern1 = /[0-9]/;
+    var pattern2 = /[a-zA-Z]/;
+    var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
+
+	
+	if($("#m_nickname").val() == null || $("#m_nickname").val() ==''){
+		alert("닉네임을 입력해주세요.");
+		$("#m_nickname").focus();
+		return;
+	}
+	if($("#m_id").val() == null || $("#m_id").val() ==''){
+		alert("여성 회원번호를 입력해주세요.");
+		$("#m_id").focus();
+		return;
+	}
+	if($("#m_password").val() == null || $("#m_password").val() ==''){
+		alert("비밀번호를 입력해주세요.");
+		$("#m_password").focus();
+		return;
+	}
+    if(!pattern1.test($("#m_password").val())||!pattern2.test($("#m_password").val())||$("#m_password").val().length<8){
+        alert("비밀번호는 영문+숫자 조합  8자리 이상으로 구성하여야 합니다.");
+        return false;
+    } 
+    if(!pattern1.test($("#m_id").val())||pattern2.test($("#m_id").val())||$("#m_id").val()<5000 ||$("#m_id").val()>5999){
+        alert("여성회원 번호는 5000 ~ 5999 까지 숫자로만 가능합니다.");
+        return false;
+    } 
+    var m_nickname =$("#m_nickname").val();
+    var m_id =$("#m_id").val();
+    var m_password =$("#m_password").val();
+    $.ajax({
+        url: '/mgmt/woman_insert',
+        type: 'POST',
+        data: {'m_id': m_id, 'm_password' : m_password, 'm_nickname' : m_nickname},
+        success: function(result) {
+       		alert(result);
+
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function woman_delete(){
+	if($("#m_id").val() == null || $("#m_id").val() ==''){
+		alert("여성 회원번호를 입력해주세요.");
+		$("#m_id").focus();
+		return;
+	}
+//     var branch_name =$("#branch_name").val();
+    var m_id =$("#m_id").val()
+    $.ajax({
+        url: '/mgmt/deleteMember',
+        type: 'POST',
+        data: {'m_id': m_id},
+        success: function(result) {
+       		alert(result);
+
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+</script>
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/mgmt/icon_title.gif" width="12" height="12">여성회원 등록/삭제</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>여성회원 등록/삭제</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/mgmt/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3 ad_table">
+          <tr>
+            <th align="center">닉네임</th>
+            <td width="60%" colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="text" class="input_text input_text_id_form" id="m_nickname" value="">
+            </td>
+          </tr>
+          <tr>
+            <th align="center">여성회원번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="text" class="input_text input_text_id_form" style="width:10%;"  id="m_id" value="">
+                <span class="mem_txt1">5000~5999 중에서 입력</span>
+            </td>
+          </tr>
+          <tr>
+            <th align="center">비밀번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+              <label for="" id=""></label>
+              <input type="text" class="input_text input_text_id_form" style="width:10%;"  id="m_password" value="">
+              <span class="mem_txt1">영문,숫자 조합으로 입력</span>
+              </td>
+          </tr>
+          </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center">
+            	<div class="ad_btn_area">
+            		<span class="conf_btn"><a href="#" onclick ="woman_insert(); return false;">생성</a></span>
+                    <span class="conf_btn2"><a href="#"  onclick ="woman_delete(); return false;">삭제</a></span>
+            	</div>
+            </td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+ 
+<%include bottom%>

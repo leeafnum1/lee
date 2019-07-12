@@ -1,0 +1,187 @@
+<script type="text/javascript">
+var duplNickname =0;
+function duplCheck(type,duplText){
+	if(duplText ==null || duplText ==""){
+		alert("체크할 값을 입력하시길바랍니다.");
+		return ;
+	}
+	$.ajax({
+        url: '/duplCheck',
+        type: 'POST',
+        data: {'type': type, 'duplText' : duplText},
+        success: function(result) {
+        	var alertText ="";
+        	if(result == 'ok'){
+           		duplNickname = 1;
+           		alertText = "대화명";
+        		alert("사용가능한 "+alertText+" 입니다.");
+        	}else{
+           		duplNickname = 0;
+           		alertText = "대화명";
+        		alert("사용 불가능한 "+alertText+" 입니다.");
+        	}      
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function alter(){
+	var pattern1 = /[0-9]/;
+    var pattern2 = /[a-zA-Z]/;
+    var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
+
+	
+	if($("#m_password").val() == null || $("#m_password").val() ==''){
+		alert("비밀번호를 입력해주세요.");
+		$("#m_password").focus();
+		return;
+	}
+	if($("#m_password2").val() == null || $("#m_password2").val() ==''){
+		alert("비밀번호 확인을 입력해주세요.");
+		$("#m_password2").focus();
+		return;
+	}
+	if($("#m_password").val() != $("#m_password2").val()  ){
+		alert("비밀번호가 일치하지않습니다..");
+		$("#m_password2").focus();
+		return;
+	}
+    if(!pattern1.test($("#m_password").val())||!pattern2.test($("#m_password").val())||$("#m_password").val().length<8){
+        alert("비밀번호는 영문+숫자 조합  8자리 이상으로 구성하여야 합니다.");
+        return false;
+    } 
+	if($('input[name="m_gender"]:checked').val()==null || $('input[name="m_gender"]:checked').val() ==""){
+		alert("성별을 선택해주세요.");
+		return;
+	}
+	if($("#m_nickname").val() == null || $("#m_nickname").val() ==''){
+		alert("대화명을 입력해주세요.");
+		$("#m_nickname").focus();
+		return;
+	}
+    if(pattern3.test($("#m_nickname").val())){
+        alert("대화명엔 특수문자를 포함 할 수 없습니다..");
+        return false;
+    }
+    if($("#m_nickname").val()  !="<%=u_info.m_nickname%>"  && duplNickname == 0){
+    	alert("대화명  중복체크를 하시길 바랍니다.");
+    	return false;
+    
+    }
+	document.m_form.action="/alter_ok";
+	document.m_form.submit();
+	
+}
+
+function pro_img_del(){
+	if(confirm("삭제하시겠습니까?")){
+		$.ajax({
+	        url: '/pro_img_del',
+	        type: 'POST',
+	        dataType: 'json',
+	        data: {'m_no' : <%=u_info.m_no%>},
+	        success: function(result) {
+	        	parent.profileChg();
+	        	profileChg();
+	        	$("#b_pro_img").css("background","url(/images/profile_photo_img2.png) no-repeat center center #e0e0e0");
+	        	$("#b_pro_img").css("background-size","100px");
+	        	$("#b_pro_img_name").html("");
+	        	$("#before_profile_img").val("");
+	         },fail: function(error) {
+	           console.log(error);
+	        }
+		});
+	}
+
+
+}
+</script>
+<form name ="m_form"  enctype="multipart/form-data"  method="post">
+<table class="information_table" style="width:100%;">
+         <tr>
+             <th scope="row">아이디</th>
+             <td>
+                 <span style="font-size:14px;"><%=u_info.m_id%></span>
+             </td>
+         </tr>
+         <tr>
+             <th scope="row">비밀번호</th>
+             <td>
+                 <label for="user_pass" id=""></label>
+                 <input type="password" name="m_password" id="m_password" maxlength="16" value="" class="input_text input_text_id_form" title="비밀번호"  value =/><p class="mem_txt1">*영문, 숫자조합 8글자 이상</p>
+             </td>
+         </tr>
+         <tr>
+             <th scope="row">비밀번호 확인</th>
+             <td>
+                 <label for="user_pass2" id=""></label>
+                 <input type="password" name="m_password2" id="m_password2" maxlength="16" value="" class="input_text input_text_id_form" title="비밀번호확인" />
+             </td>
+         </tr>
+         <tr style ="display:none;">
+             <th scope="row">성별</th>
+             <td>
+                 <input type="radio" id="m_gender1" name ="m_gender"  <%if(u_info.m_gender =='M'){%>checked<%}%> value="M"/>
+                 <label for="m_gender1">남성</label>&nbsp;&nbsp;&nbsp;
+                 <input type="radio" id="m_gender2" name ="m_gender" <%if(u_info.m_gender =='F'){%>checked<%}%> value="F"/>
+                 <label for="m_gender2">여성</label>
+             </td>
+         </tr>
+         <tr>
+             <th scope="row">대화명</th>
+             <td>
+                 <label for="m_nickname" id=""></label>
+                 <input type="text" name="m_nickname" id="m_nickname" maxlength="25"  class="input_text input_text_id_form" title="대화명" value="<%=u_info.m_nickname%>" onkeyup="duplNickname =0;"/><span class="mem_btn"><a href="#" onclick ="duplCheck('m_nickname',$('#m_nickname').val()); return false;">중복확인</a></span><p class="mem_txt1">*특수문자 제외 8글자 이내</p>
+             </td>
+         </tr>
+         <tr>
+             <th scope="row">프로필사진</th>
+             <td style="padding-top:20px;">
+             	<ul>
+                 	<li style="width:120px; float:left;">
+                     	<% if(session.u_info.m_profile_img){%>
+	               	  	<div class="pro_img_m" style="background: url(/uploads/<%=session.u_info.m_profile_img%>) no-repeat center center ;background-size: 100px;"" id="b_pro_img"></div>
+	               	  	<%}else{%>
+	               	  	<div class="pro_img_m" ></div>
+	               	  	<%}%>
+                         <!--남성<div class="pro_img_m"></div>-->
+                     </li>
+                     <li>
+                     	<input type="hidden" name ="before_profile_img" id="before_profile_img" value ="<%=u_info.m_profile_img%>" />
+                         <span class="mem_btn" style="display:block; margin-bottom:10px;"><span id="b_pro_img_name"><%=u_info.m_profile_img%></span><a href="#"  onclick ="pro_img_del(); return false;"style="margin-left:0;">삭제</a></span>
+                                       <div class="filebox bs3-primary">
+                                           <input class="upload-name" value="파일선택" disabled="disabled" />
+               
+                                           <label for="ex_filename">찾기</label> 
+                                         <input type="file" id="ex_filename" class="upload-hidden" name="m_profile_img"  /> 
+                                       </div>
+
+
+<script>
+                                      	$(document).ready(function(){
+  var fileTarget = $('.filebox .upload-hidden');
+
+	fileTarget.on('change', function(){
+		if(window.FileReader){
+			var filename = $(this)[0].files[0].name;
+		} else {
+			var filename = $(this).val().split('/').pop().split('\\').pop();
+		}
+
+		$(this).siblings('.upload-name').val(filename);
+	});
+}); 
+
+
+                                      </script>
+
+                         <p class="mem_txt1" style="margin-top:10px; color:#7d7d7d;">000X000픽셀, jpg or gif 이미지 권장</p>
+                 </li>
+                 </ul>
+             </td>
+         </tr>
+     </table>
+     <div class="point_btn_area">
+     	<span class="point_btn"><a href="#" onclick ="alter(); return false">확인</a></span>
+ 	</div>
+</form>               

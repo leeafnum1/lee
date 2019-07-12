@@ -1,0 +1,119 @@
+<%include top%>
+<script type='text/javascript'>
+
+function member_modify(){
+	var m_no =$("#m_no").val();
+	var m_password ="";
+	
+	if($("#m_password").val() == null || $("#m_password").val() ==''){
+		alert("비밀번호를 입력해주세요.");
+		$("#m_password").focus();
+		return;
+	}
+	if($("#m_password2").val() == null || $("#m_password2").val() ==''){
+		alert("비밀번호 확인을 입력해주세요.");
+		$("#m_password2").focus();
+		return;
+	}
+	if($("#m_password").val() != $("#m_password2").val()  ){
+		alert("비밀번호가 일치하지않습니다..");
+		$("#m_password2").focus();
+		return;
+	}
+    $.ajax({
+        url: '/mgmt/member_modify',
+        type: 'POST',
+        data: {'m_no': m_no, 'video_price' : 0, 'voice_price' : 0, 'freeprice_second' : 0 ,'m_password': $("#m_password").val()},
+        success: function(result) {
+       		alert(result);
+       		location.reload();
+
+        },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+</script>
+<input name ="m_no"  type ="hidden" id ="m_no" value ="<%=row.m_no%>"/>
+<input name ="m_type"  type ="hidden" id ="m_type" value ="<%=row.m_type%>"/>
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/ad/icon_title.gif" width="12" height="12">관리자 암호변경</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>관리자 암호변경</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/ad/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3 ad_table">
+          <tr>
+            <th align="center">아이디</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF"><%=row.m_id%></td>
+          </tr>
+          <tr>
+            <th align="center">비밀번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="user_pass" id=""></label>
+                <input type="password" name="m_password" id="m_password" maxlength="16" value="<%=row.m_password%>" class="input_text input_text_id_form" title="비밀번호">
+            </td>
+          </tr>
+           <tr>
+            <th align="center">비밀번호확인</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="user_pass" id=""></label>
+                <input type="password" name="m_password2" id="m_password2" maxlength="16" value="<%=row.m_password%>" class="input_text input_text_id_form" title="비밀번호">
+            </td>
+          </tr>
+          <tr>
+            <th align="center">대화명</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF"><%=row.m_nickname%></td>
+          </tr>
+          
+          </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center">
+            	<div class="ad_btn_area">
+            		<span class="conf_btn"><a href="#" onclick ="member_modify(); return false;">확인</a></span>
+            	</div>
+            </td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+<%include bottom%>

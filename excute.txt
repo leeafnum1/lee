@@ -1,0 +1,2 @@
+cd /home/club1004/public_html
+forever start -c /usr/local/node/lib/node_modules/nodemon/bin/nodemon.js -o /home/club1004/public_html/logs/access.log -e /home/club1004/public_html/logs/err.log -a --uid "club1004" www

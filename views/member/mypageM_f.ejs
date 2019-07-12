@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="/css/reset_m.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style_m.css"/>
+<link rel="stylesheet" href="/css/TabMenuSelectTransform_m.css" />
+<title>club1004</title>
+
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.TabMenuSelectTransform-0.1.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.wolfharu_tabmenu_select_transform').TabMenuSelectTransform();
+	exchangeListAjax(1);
+	pointCallAjax(function(){});
+	setTimeout(function() {
+		top.profileChg();
+		profileChg();
+	}, 2000);
+});
+
+function  exchangeListAjax(pageNum){
+	
+	var htmlTag ='';
+	if(pageNum ==null || pageNum ==""){
+		pageNum = 1;
+	}
+	$.ajax({
+        url: '/exchangeListAjax',
+        type: 'POST',
+        data : {'nowPage' :pageNum},
+        dataType: 'json',
+        success: function(result) {
+           var pageObj = result.pageObj;
+           var rows  = result.rows;
+           var spanClass ="";
+	       htmlTag += '    <table class="club_right_table2">';
+	       htmlTag += '    <colgroup>';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '        <col width="" />';
+	       htmlTag += '    </colgroup>';
+	       htmlTag += '    <tr>';
+	       htmlTag += '        <th scope="row">날짜</th>';
+	       htmlTag += '        <th scope="row">정산요청포인트</th>';
+	       htmlTag += '        <th scope="row">계좌정보</th>';
+	       htmlTag += '        <th scope="row">상태</th>';
+	       htmlTag += '    </tr>';
+		   for(var i=0; i<rows.length; i++){
+		  	 var row = rows[i];
+		       htmlTag += '    <tr>';
+		       htmlTag += '        <td>'+row.regdate+'</td>';
+		       htmlTag += '        <td>'+row.exchange_amount+'</td>';
+		       htmlTag += '        <td>'+row.bank_name+' '+row.account_number+' '+row.bank_user_name+'</td>';
+		       htmlTag += '        <td>'+row.exchange_status_kor+'</td>';
+		       htmlTag += '    </tr>';
+		   }
+	       htmlTag += ' </table>';
+	       htmlTag += ' <div class="page_wrap">';
+	       if(pageObj.page_sno >0){
+		       htmlTag += '    <a class="first disabled" href="#" onclick ="exchangeListAjax('+pageObj.prevPage+'); return false;"><img src="/images/btn_page_arrow_left.png" alt="이전"></a>';
+           		for(var i =pageObj.page_sno;i<=pageObj.page_eno;i++){
+	          		 var spanClass ="";
+					if (pageObj.nowPage == i){
+						spanClass ="active";
+					}else{
+						spanClass ="";
+					}
+				       htmlTag += '        <a href="#" class="'+spanClass+'" onclick ="exchangeListAjax('+i+'); return false;" >'+i+'</a>';
+           		}
+
+		       htmlTag += '    <a class="last" href="#" onclick ="exchangeListAjax('+pageObj.nextPage+'); return false;"><img src="/images/btn_page_arrow_right.png" alt="다음"></a>';
+	       }
+
+	       htmlTag += '</div>';
+	       $("#wolfharu_tabmenu_content_item_2").html(htmlTag);
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+}
+function pointCallAjax(callback){
+	var point  = 0;
+	var ablePoint = 0;
+	$.ajax({
+        url: '/pointViewAjax',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	point  = result.rows[0].m_point ;
+        	ablePoint = Math.floor(point/10000)*10000
+        	$("#pointSpan").html(point.toLocaleString()+" Point");
+        	$("#pointTd").html(point.toLocaleString());
+        	$("#pointAble").html(ablePoint.toLocaleString());
+        	callback();
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+function reqExchange(){
+	pointCallAjax(function(){
+		var ablePoint =$("#pointAble").html().replace(",","");
+		var bank_name = $("#bank_name").val();
+		var bank_user_name = $("#bank_user_name").val();
+		var account_number = $("#account_number").val();
+
+		if(ablePoint == 0 ){
+			alert("정산 가능한 포인트가 없습니다.");
+			return ;
+		}
+		if(bank_name == null || bank_name == "" ){
+			alert("은행명을 입력해주세요.");
+			return ;
+		}
+		if(bank_user_name == null || bank_user_name == "" ){
+			alert("예금주를 입력해주세요.");
+			return ;
+		}
+		if(account_number == null || account_number == "" ){
+			alert("계좌번호를 입력해주세요.");
+			return ;
+		}
+		if(confirm(ablePoint +" Point 를 정산요청 하시겠습니까?")){
+			$.ajax({
+		        url: '/reqExchange',
+		        type: 'POST',
+		        data : {'ablePoint' :ablePoint , 'bank_name' :bank_name , 'bank_user_name' :bank_user_name ,'account_number' :account_number },
+		        success: function(result) {
+		        	alert("정산 요청 되었습니다");
+		        	location.href ="/mypage";
+		         },fail: function(error) {
+		           console.log(error);
+		        }
+			});
+		}
+	});
+}
+function profileChg(){
+	$.ajax({
+        url: '/profileChg',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+        	if(result.m_profile_img){
+        		$("#pro_img").css("background","url(/uploads/"+result.m_profile_img+") no-repeat center center");
+        		$("#pro_img").css("background-size","51px");
+        	}else{
+        		$("#pro_img").css("background","url(/images/icon_w.png) no-repeat center center #e0e0e0");
+        		$("#pro_img").css("background-size","51px");
+        	}
+        	$("#nicknameSt").html(result.m_nickname);
+         },fail: function(error) {
+           console.log(error);
+        }
+	});
+
+}
+</script>
+
+
+</head>
+
+<body>
+
+<div class="main" style="padding:0px">
+<!-- 	<h1 span class="sub_logo"><img src="/images/sub_logo.png" /></h1> -->
+	<div class="club_wrap club8_wp culb9" style="padding-bottom:0;">
+    	<div class="club_con_right club8_right club9_right">
+        	<div class="right_top club9_right">
+            	<ul>
+               	  <li class="right_top_txt">
+               	  	<% if(session.u_info.m_profile_img){%>
+               	  	<div class="id_pro_img_w" style="background: url(/uploads/<%=session.u_info.m_profile_img%>) no-repeat center center ;background-size: 51px;"" id="pro_img"></div>
+               	  	<%}else{%>
+               	  	<div class="id_pro_img_w" ></div>
+               	  	<%}%>
+                  	
+                  	<strong id="nicknameSt"><%=session.u_info.m_nickname%></strong>
+                    <span id="pointSpan"></span>
+                  </li>
+                  <li class="right_top_btn club8_btn">
+                  	<a href="#" onclick ="parent.goChatFrame(); return false;">통화하기</a>
+                  </li>
+                </ul>
+         	</div>
+            <div class="right_middle club8_tab">
+            	<div class="wolfharu_tabmenu_select_transform">
+                    <div class="wolfharu_tabmenu_menu club9_tab">
+                        <ul>
+                            <li><a href="#wolfharu_tabmenu_content_item_1"><span>정산요청</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_2" onclick ="exchangeListAjax(1);"><span>정산요청내역</span></a></li>
+                            <li><a href="#wolfharu_tabmenu_content_item_3"><span>정보변경</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="wolfharu_tabmenu_content" style="width:100%; padding-bottom:60px;">
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_1">
+                          <p style="font-size:13px; font-weight:600; color:#676767; margin:10px 0 25px 0; word-break: keep-all;">
+                            	- 정산요청은 보유포인트가 <span style="color:#de4646;">100,000</span>포인트 이상일때 <span style="color:#de4646;">10,000</span>포인트 단위로 요청 가능합니다.
+                            </p>
+                            <table class="club_right_table point_table">
+                                <colgroup>
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                </colgroup>
+                                <tr>
+                                    <th scope="row">보유 포인트</th>
+                                    <th scope="row">정산요청 가능포인트</th>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:middle; font-size:14px;" id="pointTd"></td>
+                                    <td style="vertical-align:middle; font-size:14px;" id="pointAble"></td>
+                                   
+                                </tr>
+                             </table>
+                            <table class="club_right_table point_table" style="margin-top:20px;">
+                                <colgroup>
+                                    <col width="" />
+                                    <col width="" />
+                                    <col width="" />
+                                </colgroup>
+                                <tr>
+                                    <th scope="row">계좌정보</th>
+                                </tr>
+                                <tr>
+                                    
+                                    
+                                    <td style="text-align:left; position:relative; font-size:14px; padding:10px 10px 10px 40px;">
+                                        <span style="display:block;">
+                                        · 은 행 명:
+                                        <label for="calendar" id=""></label>
+                                        <input type="text" name="bank_name" id="bank_name" maxlength="25" value="" class="input_text input_text_id_form" title="아이디" style="width:60%; margin-left:10px;" />
+                                        </span>
+                                        <span style="display:block; margin-top:10px;">
+                                        · 계좌번호:
+                                        <label for="calendar" id=""></label>
+                                        <input type="text" name="account_number" id="account_number" maxlength="25" value="" class="input_text input_text_id_form" title="아이디" style="width:60%; margin-left:6px;" />
+                                        </span>
+                                        <span style="display:block; margin-top:10px;">
+                                        · 예 금 주:
+                                        <label for="calendar" id=""></label>
+                                        <input type="text" name="bank_user_name" id="bank_user_name" maxlength="25" value="" class="input_text input_text_id_form" title="아이디" style="width:60%; margin-left:10px;" />
+                                        </span>
+                    				</td>
+                                </tr>
+                             </table>
+                             <div class="point_btn_area">
+                                <span class="point_btn"><a href="#" onclick ="reqExchange(); return false;">요청하기</a></span>
+                            </div>
+                        </div>
+                        <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_2">
+                         </div>
+                         <div class="wolfharu_tabmenu_content_item" id="wolfharu_tabmenu_content_item_3">
+                         		<%include modify_info%>
+                         </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+         
+         
+         
+         
+     </div>
+</div>
+</body>
+</html>
+
+
+

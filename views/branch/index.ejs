@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<title>club1004</title>
+<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+function login(){
+	if($("#m_id").val() ==null || $("#m_id").val() ==""){ 
+		alert("아이디를 입력하세요.");
+		return false;
+		
+	}
+	if($("#m_password").val() ==null || $("#m_password").val() ==""){
+		alert("패스워드를 입력하세요.");
+		return false;
+		
+	}
+	document.loginForm.action ="/login";
+	document.loginForm.submit();
+	
+}
+</script>
+
+</head>
+<body>
+<form name="loginForm" method ="post" >
+<div class="main">
+	<div class="resplogin_wrap">
+    	<h3 span class="hidden_logo"><img src="/images/logo.jpg" /></h3>
+		<div class="login_box">
+			<fieldset>
+				<legend>로그인 정보 입력</legend>
+				<div class="input_wrap">
+					<span class="input_box">
+                    	<label for="m_id" id="user_id1">아이디</label>
+						<input type="text" name="m_id" id="m_id" maxlength="25" value="" class="input_text input_text_id_form" title="아이디">
+					</span>
+					<span class="input_box">
+                    	<label for="m_password" id="user_pass1">비밀번호</label>
+						<input type="password" name="m_password" id="m_password" maxlength="16" value="" class="input_text" title="비밀번호" >
+						</span>
+					<span class="check_box">
+						<input type="checkbox" id="c1_1" name="id+pw" value="Y"/>
+           				<label for="c1_1"><span></span>아이디, 비밀번호 저장</label>
+                        <span class="btn_area"><a href="/join">회원가입</a></span>
+<!-- 						<span class="btn_area"><a href="#" onclick ="alert('준비중'); return false;">회원가입</a></span> -->
+					</span>
+					<button  class="btn_submit" onclick ="login(); return false;">로그인</button>
+				</div>
+			</fieldset>
+				
+		
+    </div>
+</div>
+</form>
+</body>
+</html>

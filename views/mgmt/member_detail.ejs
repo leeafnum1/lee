@@ -1,0 +1,263 @@
+<%include top%>
+<script type='text/javascript'>
+function pointCharge(){
+	var pattern1 = /[0-9]/;
+    var pattern2 = /[a-zA-Z]/;
+    var pattern3 = /[~!@#$%^&*()_+|<>?:{}]/;
+
+	
+	if($("#m_point").val() == null || $("#m_point").val() ==''){
+		alert("충전할 포인트를 입력해주세요.");
+		return;
+	}
+	if($("#m_type").val()  == 1 || $("#m_type").val() == 3  ){
+	    var m_point =$("#m_point").val();
+	    var m_no =$("#m_no").val();
+	    $.ajax({
+	        url: '/mgmt/pointCharge',
+	        type: 'POST',
+	        data: {'m_point': m_point, 'm_no' : m_no},
+	        success: function(result) {
+	       		alert(result);
+	       		location.reload();
+
+	        },fail: function(error) {
+	           console.log(error);
+	        }
+		});
+		
+	}else{
+		alert("일반회원 또는 지점 관리자의 경우에만 충전 할 수 있습니다.");
+		return;
+	}
+
+}
+
+function member_modify(){
+	var m_no =$("#m_no").val();
+	var m_password ="";
+	if($("#freeprice_second").val() ==null){
+		$("#freeprice_second").val(0);
+	}
+	if($("#video_price").val() ==null){
+		$("#video_price").val(0);
+	}
+	if($("#voice_price").val() ==null){
+		$("#voice_price").val(0);
+	}
+	
+	if($("#m_password").val() == null || $("#m_password").val() ==''){
+		alert("비밀번호를 입력해주세요.");
+		$("#m_password").focus();
+		return;
+	}
+	if($("#m_password2").val() == null || $("#m_password2").val() ==''){
+		alert("비밀번호 확인을 입력해주세요.");
+		$("#m_password2").focus();
+		return;
+	}
+	if($("#m_password").val() != $("#m_password2").val()  ){
+		alert("비밀번호가 일치하지않습니다..");
+		$("#m_password2").focus();
+		return;
+	}
+	document.m_form.action="/mgmt/member_modify";
+	document.m_form.submit();
+      
+}
+
+function pro_img_del(){
+	if(confirm("삭제하시겠습니까?")){
+		$.ajax({
+	        url: '/pro_img_del',
+	        type: 'POST',
+	        dataType: 'json',
+	        data: {'m_no' : <%=row.m_no%>},
+	        success: function(result) {
+	        	$("#b_pro_img").css("background","url(/images/profile_photo_img2.png) no-repeat center center #e0e0e0;background-size:100px");
+	        	$("#b_pro_img_name").html("");
+	        	$("#before_profile_img").val("");
+	         },fail: function(error) {
+	           console.log(error);
+	        }
+		});
+	}
+
+
+}
+</script>
+<form name ="m_form"  id ="m_form" enctype="multipart/form-data"  method="post">
+<input name ="m_no"  type ="hidden" id ="m_no" value ="<%=row.m_no%>"/>
+<input name ="m_type"  type ="hidden" id ="m_type" value ="<%=row.m_type%>"/>
+
+   <div id="right_main">
+   		<table width="1070" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            	<tr>
+                  <td width="179" height="35" class="title"><div id="this_menu"><img src="/images/ad/icon_title.gif" width="12" height="12">회원관리</div></td>
+                  <td height="32" align="right"><div class="s_navi">admin&nbsp; &gt;&nbsp;  <b>회원관리</b></div></td>
+             	 </tr>
+            	<tr>
+              	   <td height="4" colspan="2" background="/images/ad/a_linebg.gif" id="topline"></td>
+            </tr>
+          	</tbody>
+          </table>
+      </td>
+  </tr>
+
+      </table>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td align="center"></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="E0E0E0" class="table3 ad_table">
+          <tr>
+            <th align="center">아이디</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF"><%=row.m_id%></td>
+          </tr>
+          <tr>
+            <th align="center">비밀번호</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="user_pass" id=""></label>
+                <input type="password" name="m_password" id="m_password" maxlength="16" value="<%=row.m_password%>" class="input_text input_text_id_form" title="비밀번호">
+            </td>
+          </tr>
+          <tr>
+            <th align="center">비밀번호확인</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<label for="user_pass" id=""></label>
+                <input type="password" name="m_password2" id="m_password2" maxlength="16" value="<%=row.m_password%>" class="input_text input_text_id_form" title="비밀번호">
+            </td>
+          </tr>
+          <tr>
+          <tr>
+            <th align="center">대화명</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF"><%=row.m_nickname%></td>
+          </tr>
+          <tr>
+            <th align="center">성별</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF"><%=row.m_gender_kor%></td>
+          </tr>
+          <tr>
+            <th align="center">프로필사진</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<ul>
+                                            	<li style="width:120px; float:left;">
+                                                	<% if(row.m_profile_img){%>
+								               	  	<div class="pro_img_m" style="background: url(/uploads/<%=row.m_profile_img%>) no-repeat center center ;background-size:100px" id="b_pro_img"></div>
+								               	  	<%}else{%>
+								               	  	<div class="pro_img_m" ></div>
+								               	  	<%}%>
+                                                </li>
+                                                <li>
+                                                <input type="hidden" name ="before_profile_img" id="before_profile_img" value ="<%=row.m_profile_img%>" />
+                                                    <span class="mem_btn" style="display:block; margin-bottom:10px;"><span id="b_pro_img_name"><%=row.m_profile_img%></span><a href="#"  onclick ="pro_img_del(); return false;"style="margin-left:0;">삭제</a></span>
+                                                    <div class="filebox bs3-primary">
+                                                        <input class="upload-name" value="파일선택" disabled="disabled">
+                            
+                                                        <label for="ex_filename">찾기</label> 
+                                                      <input type="file" id="ex_filename" class="upload-hidden" name="m_profile_img"  > 
+                                                    </div>
+
+
+													<script>
+                                                    	$(document).ready(function(){
+														  var fileTarget = $('.filebox .upload-hidden');
+														
+															fileTarget.on('change', function(){
+																if(window.FileReader){
+																	var filename = $(this)[0].files[0].name;
+																} else {
+																	var filename = $(this).val().split('/').pop().split('\\').pop();
+																}
+														
+																$(this).siblings('.upload-name').val(filename);
+															});
+														}); 
+
+
+                                                    </script>
+
+                                                    <p class="mem_txt1" style="margin:10px 0 0 0;">000X000픽셀, jpg or gif 이미지 권장</p>
+                                            </li>
+                                            </ul>
+            </td>
+          </tr>
+<!--           <tr> -->
+<!--             <th align="center">주소</th> -->
+<!--             <td colspan="3" align="center" bgcolor="#FFFFFF"> -->
+<!--             	<label for="" id=""></label> -->
+<!--                 <input type="text" name="" id="" class="input_text input_text_id_form" style="width:90%;"> -->
+<!--             </td> -->
+<!--           </tr> -->
+          <tr>
+            <th align="center">요금</th>
+            <td colspan="3" align="center" bgcolor="#FFFFFF">
+            	<ul>
+                	<li>
+                    	분당요금(영상)
+                         <label for="" id=""></label>
+               			 <input type="number" class="input_text input_text_id_form" title="비밀번호" value="<%=row.video_price%>" maxlength="16"  name="video_price" id ="video_price"/> 원
+                	</li>
+                    <li style="margin-top:10px;">
+                    	분당요금(전화) 
+                        <label for="" id=""></label>
+                    	<input type="number" class="input_text input_text_id_form" title="비밀번호" value="<%=row.voice_price%>" maxlength="16" name="voice_price"  id ="voice_price"/> 원
+                    </li>
+                    <li style="margin-top:10px;">
+                    	빈통화시간조정 
+                        <label for="" id=""></label>
+                    	<input type="number" class="input_text input_text_id_form" title="비밀번호" value="<%=row.freeprice_second%>" maxlength="16" name="freeprice_second"  id ="freeprice_second"/> 초
+                    </li>
+
+                    </ul>
+            </td>
+          </tr>
+          <tr>
+            <th align="center">현재포인트</th>
+            <td width="30%" align="center" bgcolor="#FFFFFF"><%=row.m_point.toLocaleString()%> 포인트</td>
+            <th align="center" bgcolor="#FFFFFF">관리자 충전</th>
+            <td width="30%" align="center" bgcolor="#FFFFFF">
+            	<label for="" id=""></label>
+                <input type="number" name="m_point" id="m_point" class="input_text input_text_id_form" />
+                <span class="mem_btn" style="margin-bottom:10px;"><a href="#" onclick ="pointCharge(); return false;" style="margin-left:2px;">충전</a></span>
+            </td>
+          </tr>
+          </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center">
+            	<div class="ad_btn_area">
+            		<span class="conf_btn"><a href="#" onclick ="member_modify(); return false;">확인</a></span>
+            	</div>
+            </td>
+            </tr>
+        </table></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      </table></td>
+  </tr>
+      </table>
+
+   </div>
+ </div>
+ </form>
+<%include bottom%>
